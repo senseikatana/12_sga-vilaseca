@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import App from '../components/App';
+import '../styles/global.css';
+---
+
+<BaseLayout>
+  <!--
+    App is a React island rendered on the client side.
+    client:load ensures it hydrates immediately on page load.
+    The entire SPA logic lives inside App.tsx — Astro handles
+    the shell (meta, fonts, icons) while React owns the interactive UI.
+  -->
+  <App client:load />
+</BaseLayout>

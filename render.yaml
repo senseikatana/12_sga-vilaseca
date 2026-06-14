@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: sga-vilaseca-api
+    runtime: docker
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: PORT
+        fromEnv: PORT
+      - key: NODE_ENV
+        fromEnv: NODE_ENV
+      - key: FRONTEND_URL
+        fromEnv: FRONTEND_URL
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        fromEnv: OPENROUTER_MODEL
+    # Disco persistente para que la base de datos SQLite sobreviva reinicios
+    disk:
+      name: warehouse-db
+      mountPath: /app
+      sizeGB: 5
+    healthCheckPath: /api/health
+    plan: free
+    autoDeploy: true
