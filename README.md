@@ -75,8 +75,4 @@ npm run build   # genera dist/
 npm run preview # previsualiza el build
 ```
 
-La salida estática en `dist/` se puede servir con cualquier CDN (Vercel, Netlify, Cloudflare Pages…).
-# 12_sga-vilaseca
-# 12_sga-vilaseca
-# 12_sga-vilaseca
-# 12_sga-vilaseca
+
