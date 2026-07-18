@@ -8,7 +8,7 @@ export interface Props {
   description?: string;
 }
 
-const { title: 'Dashboard Intranet de ESINSA Gasket, Tgna', description: 'Panel Control de SGA, Gestión Inventario en Esinsa' } = Astro.props;
+const { title = 'Dashboard Intranet de ESINSA Gasket, Tgna', description = 'Panel Control de SGA, Gestión Inventario en Esinsa' } = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} >
@@ -92,6 +92,22 @@ const { title: 'Dashboard Intranet de ESINSA Gasket, Tgna', description: 'Panel 
       </main>
     </div>
   </div>
+
+  <script is:inline>
+    (function() {
+      const session = sessionStorage.getItem('esinsa_wms_session');
+      if (!session) {
+        window.location.href = '/Login';
+        return;
+      }
+      try {
+        window.__CURRENT_USER = JSON.parse(session);
+      } catch(e) {
+        sessionStorage.removeItem('esinsa_wms_session');
+        window.location.href = '/Login';
+      }
+    })();
+  </script>
 
   <script>
     const sidebarToggleCheckbox = document.getElementById('sidebar-toggle');

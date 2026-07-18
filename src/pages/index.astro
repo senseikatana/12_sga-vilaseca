@@ -1,27 +1,26 @@
 ---
-// src/pages/index.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
 import dynamicData from '../data/esinsa-dynamic-full.json';
 
 const homeData = dynamicData.home;
 const sectoresData = dynamicData.sectores;
 ---
 
-<Layout>
+<BaseLayout title={homeData.title}>
   <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-screen-xl">
-      <!-- Renderiza el texto dinámico sin etiquetas HTML peligrosas -->
-      <h1 class="text-3xl font-bold">{homeData.title}</h1>
-      <p class="text-gray-600">{homeData.text.substring(0, 200)}</p>
-      
-      <!-- Si quieres mostrar el HTML enriquecido (con estilos), usa set:html -->
-      <div class="prose" set:html={sectoresData.html} />
-      
-      <!-- Mostrar imágenes capturadas -->
-      <div class="grid grid-cols-3 gap-4">
-        {homeData.images.slice(0, 3).map((img) => (
-          <img src={img.src} alt={img.alt} class="rounded-lg" />
-        ))}
-      </div>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{homeData.title}</h1>
+      <p class="mt-2 text-gray-600 dark:text-gray-400">{homeData.text.substring(0, 200)}...</p>
+
+      <div class="prose dark:prose-invert mt-8 max-w-none" set:html={sectoresData.html} />
+
+      {homeData.images && homeData.images.length > 0 && (
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {homeData.images.slice(0, 6).map((img) => (
+            <img src={img.src} alt={img.alt || ''} class="rounded-lg shadow-sm object-cover w-full h-48" loading="lazy" />
+          ))}
+        </div>
+      )}
     </div>
   </section>
-</Layout>
+</BaseLayout>

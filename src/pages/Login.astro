@@ -1,0 +1,152 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Iniciar Sesión - ESINSA WMS">
+  <div class="mx-auto max-w-lg px-4 py-16">
+    <div class="text-center">
+      <div class="mx-auto inline-flex size-14 items-center justify-center rounded-full bg-indigo-600">
+        <svg class="size-7 text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+        </svg>
+      </div>
+      <h1 class="mt-4 text-2xl font-bold text-gray-900 dark:text-white">ESINSA WMS</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Sistema de Gestión de Almacenes</p>
+    </div>
+
+    <div class="mt-8 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-8 shadow-sm">
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Iniciar Sesión</h2>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Ingresa con tus credenciales de operario</p>
+
+      <form id="login-form" class="mt-6 space-y-5">
+        <div id="login-error" class="hidden items-center gap-2 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-3 text-sm text-red-700 dark:text-red-400">
+          <svg class="size-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
+          <span id="login-error-text"></span>
+        </div>
+
+        <label for="login-email" class="block">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Email</span>
+          <input
+            type="email"
+            id="login-email"
+            required
+            autocomplete="email"
+            placeholder="admin@esinsa.es"
+            class="mt-0.5 block w-full rounded-lg border border-gray-300 shadow-sm sm:text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:placeholder-gray-500"
+          />
+        </label>
+
+        <label for="login-password" class="block">
+          <span class="text-sm font-medium text-gray-700 dark:text-gray-200">Contraseña</span>
+          <div class="relative mt-0.5">
+            <input
+              type="password"
+              id="login-password"
+              required
+              autocomplete="current-password"
+              placeholder="••••••••"
+              class="block w-full rounded-lg border border-gray-300 pr-10 shadow-sm sm:text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white dark:placeholder-gray-500"
+            />
+            <button
+              type="button"
+              id="toggle-password"
+              tabindex="-1"
+              class="absolute inset-y-0 right-0 grid w-10 place-content-center text-gray-700 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white"
+            >
+              <svg id="eye-icon" class="size-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
+          </div>
+        </label>
+
+        <button
+          type="submit"
+          id="login-submit"
+          class="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 dark:focus:ring-offset-gray-900"
+        >
+          <span id="submit-text">Iniciar Sesión</span>
+          <svg id="submit-spinner" class="hidden size-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        </button>
+      </form>
+
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+        </div>
+        <div class="relative flex justify-center text-xs">
+          <span class="bg-white px-2 text-gray-500 dark:bg-gray-900 dark:text-gray-400">¿No tienes cuenta?</span>
+        </div>
+      </div>
+
+      <a
+        href="/Register"
+        class="block w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+      >
+        Crear nueva cuenta
+      </a>
+    </div>
+
+    <p class="mt-6 text-center text-xs text-gray-400 dark:text-gray-500">
+      ESINSA Gaskets · Demo: admin@esinsa.es / admin123
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  import { loginUser } from '../lib/auth';
+
+  const form = document.getElementById('login-form');
+  const emailInput = document.getElementById('login-email');
+  const passwordInput = document.getElementById('login-password');
+  const errorDiv = document.getElementById('login-error');
+  const errorText = document.getElementById('login-error-text');
+  const submitBtn = document.getElementById('login-submit');
+  const submitText = document.getElementById('submit-text');
+  const submitSpinner = document.getElementById('submit-spinner');
+  const toggleBtn = document.getElementById('toggle-password');
+  const eyeIcon = document.getElementById('eye-icon');
+
+  let loading = false;
+
+  toggleBtn?.addEventListener('click', () => {
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+    eyeIcon.innerHTML = isPassword
+      ? `<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />`
+      : `<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />`;
+  });
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (loading) return;
+
+    errorDiv?.classList.add('hidden');
+    loading = true;
+    submitBtn.disabled = true;
+    submitText.textContent = 'Iniciando sesión...';
+    submitSpinner?.classList.remove('hidden');
+
+    setTimeout(() => {
+      const result = loginUser(emailInput.value, passwordInput.value);
+      loading = false;
+      submitBtn.disabled = false;
+      submitText.textContent = 'Iniciar Sesión';
+      submitSpinner?.classList.add('hidden');
+
+      if (result.success) {
+        window.location.href = '/';
+      } else {
+        errorText.textContent = result.error || 'Error al iniciar sesión';
+        errorDiv?.classList.remove('hidden');
+        errorDiv?.classList.add('flex');
+      }
+    }, 400);
+  });
+</script>
