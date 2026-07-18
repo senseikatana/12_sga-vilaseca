@@ -1,5 +1,7 @@
 ---
 import DashboardLayout from '../layouts/DashboardLayout.astro';
+import AutoCrud from '../components/AutoCrud';
+import { useInventoryStore } from '../lib/stores';
 ---
 
 <DashboardLayout title="Inventario Esinsa">
@@ -29,15 +31,9 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       </svg>
       Preparar Etiquetas
     </button>
-    <button
-        id="open-add-item-modal"
-        class="rounded-md bg-gray-900 dark:bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800 dark:hover:bg-indigo-700 shadow-sm"
-        data-i18n="Nuevo Material" data-en="New Material" data-es="Nuevo Material"
-      >
-        Nuevo Material
-    </button>
   </div>
 
+  <!-- KPI Stat Cards -->
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-6">
     <article class="flex flex-col gap-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
       <div>
@@ -47,7 +43,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     </article>
     <article class="flex flex-col gap-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
       <div>
-        <strong class="block text-sm font-medium text-gray-600 dark:text-gray-400">Stock Crítico (< 100 uds)</strong>
+        <strong class="block text-sm font-medium text-gray-600 dark:text-gray-400">Stock Crítico (&lt; 100 uds)</strong>
         <p><span class="text-3xl font-medium text-red-600 dark:text-red-400" id="stat-low-stock">0</span></p>
       </div>
     </article>
@@ -59,94 +55,39 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     </article>
   </div>
 
-  <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <h2 class="text-sm font-medium text-gray-900 dark:text-white" data-i18n="Directorio de Materiales" data-en="Materials Directory" data-es="Directorio de Materiales">Directorio de Materiales</h2>
+  <!-- AutoCRUD Table -->
+  <AutoCrud
+    client:load
+    type="inventory"
+    config={JSON.stringify({
+      title: 'Directorio de Materiales',
+      description: 'Gestión de referencias NUTCODE del inventario',
+      columns: [
+        { key: 'nutcode', label: 'NUTCODE', sortable: true },
+        { key: 'desc', label: 'Descripción', sortable: true },
+        { key: 'type', label: 'Tipo', sortable: true },
+        { key: 'stock', label: 'Stock', html: true, sortable: true },
+        { key: 'loc', label: 'Ubicación', sortable: true },
+      ],
+      fields: [
+        { name: 'desc', label: 'Descripción', type: 'text', placeholder: 'Ej. Espárrago B7 M16x100' },
+        { name: 'type', label: 'Tipo / Categoría', type: 'select', options: [
+          { value: 'Espárragos', label: 'Espárragos' },
+          { value: 'Tuercas', label: 'Tuercas' },
+          { value: 'Tornillos sin fin', label: 'Tornillos sin fin' },
+          { value: 'Juntas', label: 'Juntas' },
+          { value: 'Cajas/Embalaje', label: 'Cajas/Embalaje' },
+        ]},
+        { name: 'stock', label: 'Stock a Granel (Uds)', type: 'number' },
+        { name: 'loc', label: 'Ubicación física', type: 'text', placeholder: 'Ej. Pasillo A, Estante 3' },
+      ],
+      searchKeys: ['nutcode', 'desc'],
+      idKey: 'id',
+      displayKey: 'nutcode',
+    })}
+  />
 
-      <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <label for="inventory-search" class="sr-only">Buscar material</label>
-        <div class="relative">
-          <input
-            type="text"
-            id="inventory-search"
-            placeholder="Buscar por NUTCODE o descripción..."
-            class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-1.5 text-sm text-gray-900 dark:text-white shadow-xs ltr:pr-9 rtl:pl-9 sm:w-72"
-          />
-          <span class="pointer-events-none absolute inset-y-0 grid w-8 place-content-center text-gray-400 ltr:right-0 rtl:left-0">
-            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
-          </span>
-        </div>
-      </div>
-    </div>
-
-    <div class="mt-4 overflow-x-auto">
-      <table class="min-w-full divide-y-2 divide-gray-200 dark:divide-gray-800">
-        <thead class="ltr:text-left rtl:text-right">
-          <tr class="*:font-medium *:text-gray-900 dark:*:text-gray-300">
-            <th class="px-3 py-2 whitespace-nowrap">NUTCODE</th>
-            <th class="px-3 py-2 whitespace-nowrap">Descripción</th>
-            <th class="px-3 py-2 whitespace-nowrap">Tipo</th>
-            <th class="px-3 py-2 whitespace-nowrap">Ubicación</th>
-            <th class="px-3 py-2 whitespace-nowrap">Stock (Granel)</th>
-            <th class="px-3 py-2 whitespace-nowrap">Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="inventory-table-body" class="divide-y divide-gray-200 dark:divide-gray-800">
-          <tr id="inventory-empty-row" class="hidden">
-            <td class="px-3 py-6 text-center text-gray-600 dark:text-gray-400" colspan="6">
-              No hay materiales que coincidan con la búsqueda.
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- CRUD Modal Dialog: Material -->
-  <dialog id="item-modal" class="backdrop:bg-gray-900/50 open:flex flex-col p-6 rounded-xl shadow-xl w-full max-w-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white mx-auto mt-20">
-    <h3 id="item-modal-title" class="text-lg font-bold mb-4">Añadir Material</h3>
-    <form id="item-form" method="dialog" class="space-y-4">
-      <input type="hidden" id="item-id" />
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">NUTCODE</label>
-          <input type="text" id="item-nutcode" required placeholder="Ej. NUT0000391" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Tipo / Categoría</label>
-          <select id="item-type" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm">
-            <option value="Espárragos">Espárragos</option>
-            <option value="Tuercas">Tuercas</option>
-            <option value="Tornillos sin fin">Tornillos sin fin</option>
-            <option value="Juntas">Juntas</option>
-            <option value="Cajas/Embalaje">Cajas/Embalaje</option>
-          </select>
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-medium mb-1">Descripción</label>
-        <input type="text" id="item-desc" required placeholder="Ej. Espárrago B7 M16x100" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-medium mb-1">Stock a Granel (Uds)</label>
-          <input type="number" id="item-stock" required min="0" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
-        </div>
-        <div>
-          <label class="block text-sm font-medium mb-1">Ubicación física</label>
-          <input type="text" id="item-loc" required placeholder="Ej. Pasillo A, Estante 3" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
-        </div>
-      </div>
-      <div class="flex justify-end gap-2 mt-6 border-t border-gray-200 dark:border-gray-800 pt-4">
-        <button type="button" id="close-item-modal" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md">Cancelar</button>
-        <button type="submit" class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md">Guardar Registro</button>
-      </div>
-    </form>
-  </dialog>
-
-  <!-- KITTING Modal Dialog: Preparación de Cajas -->
+  <!-- Kitting Modal -->
   <dialog id="kitting-modal" class="backdrop:bg-gray-900/50 open:flex flex-col p-6 rounded-xl shadow-xl w-full max-w-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white mx-auto mt-20">
     <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
       <svg class="size-5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" /></svg>
@@ -155,9 +96,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     <form id="kitting-form" method="dialog" class="space-y-4">
       <div>
         <label class="block text-sm font-medium mb-1">Material a preparar (NUTCODE)</label>
-        <select id="kitting-nutcode" required class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm font-mono">
-          <!-- Populated by JS -->
-        </select>
+        <select id="kitting-nutcode" required class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm font-mono"></select>
         <p id="kitting-stock-warning" class="text-xs text-red-500 mt-1 hidden">Stock insuficiente para esta operación.</p>
       </div>
       <div class="grid grid-cols-2 gap-4">
@@ -170,141 +109,45 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
           <input type="number" id="kitting-per-box" required min="1" value="20" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
         </div>
       </div>
-      
-      <!-- Calculator Result Panel -->
       <div class="mt-4 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg">
         <p class="text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">Resumen de trabajo para el operario:</p>
         <ul class="text-sm text-emerald-700 dark:text-emerald-400 space-y-1 font-medium" id="kitting-result-list">
           <li>- Introduzca cantidad y uds/caja para calcular.</li>
         </ul>
       </div>
-
       <div class="flex justify-end gap-2 mt-6 border-t border-gray-200 dark:border-gray-800 pt-4">
         <button type="button" id="close-kitting-modal" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md">Cancelar</button>
         <button type="submit" id="submit-kitting-btn" disabled class="px-4 py-2 text-sm text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-md">Descontar Stock e Imprimir</button>
       </div>
     </form>
   </dialog>
+</DashboardLayout>
 
 <script>
+  import { useInventoryStore } from '../lib/stores';
+  import { seedGenerators } from '../lib/stores';
+
+  // === Seed counters from any existing persisted data ===
+  seedGenerators();
+
   let labelsPrintedToday = 0;
 
-  let inventory = [
-    { id: 1, nutcode: 'NUT0000391', desc: 'Espárrago roscado B7 M16x100', type: 'Espárragos', stock: 1500, loc: 'Pasillo A, Est. 1' },
-    { id: 2, nutcode: 'NUT0000392', desc: 'Tuerca Hexagonal 2H M16', type: 'Tuercas', stock: 3200, loc: 'Pasillo A, Est. 2' },
-    { id: 3, nutcode: 'NUT0000393', desc: 'Tornillo sin fin rosca chapa', type: 'Tornillos sin fin', stock: 85, loc: 'Pasillo B, Est. 1' },
-    { id: 4, nutcode: 'NUT0000394', desc: 'Junta Espirometálica ASME 4"', type: 'Juntas', stock: 450, loc: 'Pasillo C, Est. 3' },
-  ];
-
-  const tbody = document.getElementById('inventory-table-body');
-  const emptyRow = document.getElementById('inventory-empty-row');
-  const searchInput = document.getElementById('inventory-search') as HTMLInputElement;
-  
-  // Dashboard stats
   const statTotal = document.getElementById('stat-total-refs');
   const statLow = document.getElementById('stat-low-stock');
   const statLabels = document.getElementById('stat-labels-printed');
 
   function updateStats() {
-    statTotal.textContent = inventory.length.toString();
-    const lowStock = inventory.filter(i => i.stock < 100).length;
-    statLow.textContent = lowStock.toString();
+    const items = useInventoryStore.getState().items;
+    statTotal.textContent = items.length.toString();
+    statLow.textContent = items.filter(i => i.stock < 100).length.toString();
     statLabels.textContent = labelsPrintedToday.toString();
   }
 
-  function getStockBadge(stock: number) {
-    if (stock > 500) return `<span class="rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 text-xs text-green-700 dark:text-green-400 font-bold">${stock}</span>`;
-    if (stock >= 100) return `<span class="rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-2.5 py-0.5 text-xs text-yellow-700 dark:text-yellow-400 font-bold">${stock}</span>`;
-    return `<span class="rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 text-xs text-red-700 dark:text-red-400 font-bold">${stock}</span>`;
-  }
+  // Subscribe to store changes to keep stat cards updated
+  useInventoryStore.subscribe(() => updateStats());
+  updateStats();
 
-  function renderTable() {
-    const rows = tbody.querySelectorAll('tr[data-item-row]');
-    rows.forEach(r => r.remove());
-
-    const term = searchInput.value.toLowerCase();
-    let visible = 0;
-
-    inventory.forEach(item => {
-      if (!item.nutcode.toLowerCase().includes(term) && !item.desc.toLowerCase().includes(term)) return;
-      
-      visible++;
-      const tr = document.createElement('tr');
-      tr.setAttribute('data-item-row', 'true');
-      tr.className = '*:text-gray-900 dark:*:text-gray-300 *:first:font-mono *:first:font-bold border-t border-gray-200 dark:border-gray-800';
-      tr.innerHTML = `
-        <td class="px-3 py-3 whitespace-nowrap text-indigo-600 dark:text-indigo-400">${item.nutcode}</td>
-        <td class="px-3 py-3 whitespace-nowrap max-w-xs truncate" title="${item.desc}">${item.desc}</td>
-        <td class="px-3 py-3 whitespace-nowrap">${item.type}</td>
-        <td class="px-3 py-3 whitespace-nowrap">${item.loc}</td>
-        <td class="px-3 py-3 whitespace-nowrap">${getStockBadge(item.stock)}</td>
-        <td class="px-3 py-3 whitespace-nowrap">
-          <button onclick="window.editItem(${item.id})" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-3 text-sm font-medium">Editar</button>
-          <button onclick="window.deleteItem(${item.id})" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium">Borrar</button>
-        </td>
-      `;
-      tbody.appendChild(tr);
-    });
-
-    emptyRow.classList.toggle('hidden', visible > 0);
-    updateStats();
-  }
-
-  searchInput.addEventListener('input', renderTable);
-
-  // === CRUD Modal Logic ===
-  const modal = document.getElementById('item-modal') as HTMLDialogElement;
-  const form = document.getElementById('item-form') as HTMLFormElement;
-  const openBtn = document.getElementById('open-add-item-modal');
-  const closeBtn = document.getElementById('close-item-modal');
-
-  openBtn.addEventListener('click', () => {
-    form.reset();
-    document.getElementById('item-id').value = '';
-    document.getElementById('item-modal-title').textContent = 'Añadir Material';
-    modal.showModal();
-  });
-
-  closeBtn.addEventListener('click', () => modal.close());
-
-  form.addEventListener('submit', (e) => {
-    const id = document.getElementById('item-id').value;
-    const nutcode = (document.getElementById('item-nutcode') as HTMLInputElement).value;
-    const desc = (document.getElementById('item-desc') as HTMLInputElement).value;
-    const type = (document.getElementById('item-type') as HTMLSelectElement).value;
-    const stock = parseInt((document.getElementById('item-stock') as HTMLInputElement).value, 10);
-    const loc = (document.getElementById('item-loc') as HTMLInputElement).value;
-
-    if (id) {
-      const idx = inventory.findIndex(i => i.id == id);
-      if (idx > -1) inventory[idx] = { ...inventory[idx], nutcode, desc, type, stock, loc };
-    } else {
-      inventory.push({ id: Date.now(), nutcode, desc, type, stock, loc });
-    }
-    renderTable();
-  });
-
-  window.editItem = (id) => {
-    const item = inventory.find(i => i.id === id);
-    if (!item) return;
-    document.getElementById('item-id').value = item.id;
-    (document.getElementById('item-nutcode') as HTMLInputElement).value = item.nutcode;
-    (document.getElementById('item-desc') as HTMLInputElement).value = item.desc;
-    (document.getElementById('item-type') as HTMLSelectElement).value = item.type;
-    (document.getElementById('item-stock') as HTMLInputElement).value = item.stock.toString();
-    (document.getElementById('item-loc') as HTMLInputElement).value = item.loc;
-    document.getElementById('item-modal-title').textContent = 'Editar Material';
-    modal.showModal();
-  };
-
-  window.deleteItem = (id) => {
-    if (confirm('¿Seguro que deseas eliminar este material del inventario?')) {
-      inventory = inventory.filter(i => i.id !== id);
-      renderTable();
-    }
-  };
-
-  // === KITTING Modal Logic (Esinsa Workflow) ===
+  // === Kitting Modal ===
   const kittingModal = document.getElementById('kitting-modal') as HTMLDialogElement;
   const kittingForm = document.getElementById('kitting-form') as HTMLFormElement;
   const openKittingBtn = document.getElementById('open-kitting-modal');
@@ -317,8 +160,9 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
   const kittingStockWarning = document.getElementById('kitting-stock-warning');
 
   function populateKittingSelect() {
+    const items = useInventoryStore.getState().items;
     kittingNutcodeSelect.innerHTML = '<option value="">-- Seleccionar material --</option>';
-    inventory.forEach(item => {
+    items.forEach(item => {
       const opt = document.createElement('option');
       opt.value = item.nutcode;
       opt.textContent = `${item.nutcode} - ${item.desc} (Stock: ${item.stock})`;
@@ -349,7 +193,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       return;
     }
 
-    const item = inventory.find(i => i.nutcode === nutcode);
+    const item = useInventoryStore.getState().getByNUT(nutcode);
     if (!item) return;
 
     if (total > item.stock) {
@@ -357,23 +201,16 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       submitKittingBtn.disabled = true;
       kittingResultList.innerHTML = `<li><span class="text-red-600">Error: Se requieren ${total} uds, pero solo hay ${item.stock} a granel.</span></li>`;
       return;
-    } else {
-      kittingStockWarning.classList.add('hidden');
     }
+    kittingStockWarning.classList.add('hidden');
 
     const fullBoxes = Math.floor(total / perBox);
     const pico = total % perBox;
     const totalLabels = fullBoxes + (pico > 0 ? 1 : 0);
 
     let resultHtml = `<li><strong class="text-indigo-600 dark:text-indigo-400">Total etiquetas a imprimir: ${totalLabels}</strong></li>`;
-    
-    if (fullBoxes > 0) {
-      resultHtml += `<li>→ <strong>${fullBoxes}</strong> etiqueta(s) indicando cantidad de <strong>${perBox}</strong> uds. (Caja estándar)</li>`;
-    }
-    if (pico > 0) {
-      resultHtml += `<li>→ <strong>1</strong> etiqueta "Pico" indicando cantidad de <strong>${pico}</strong> uds. (Para material extra)</li>`;
-    }
-
+    if (fullBoxes > 0) resultHtml += `<li>→ <strong>${fullBoxes}</strong> etiqueta(s) de <strong>${perBox}</strong> uds.</li>`;
+    if (pico > 0) resultHtml += `<li>→ <strong>1</strong> etiqueta "Pico" de <strong>${pico}</strong> uds.</li>`;
     kittingResultList.innerHTML = resultHtml;
     submitKittingBtn.disabled = false;
   }
@@ -383,109 +220,87 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
   kittingPerBoxInput.addEventListener('input', calculateKitting);
 
   kittingForm.addEventListener('submit', (e) => {
-    // Discount stock
     const nutcode = kittingNutcodeSelect.value;
     const total = parseInt(kittingTotalInput.value, 10);
     const perBox = parseInt(kittingPerBoxInput.value, 10);
-    
-    const idx = inventory.findIndex(i => i.nutcode === nutcode);
-    if (idx > -1) {
-      const item = inventory[idx];
-      item.stock -= total;
-      
-      // Update labels printed stat
-      const fullBoxes = Math.floor(total / perBox);
-      const pico = total % perBox;
-      const picoLabelCount = pico > 0 ? 1 : 0;
-      const totalLabelsToPrint = fullBoxes + picoLabelCount;
-      labelsPrintedToday += totalLabelsToPrint;
-      
-      renderTable();
+    const item = useInventoryStore.getState().getByNUT(nutcode);
+    if (!item) return;
 
-      // === GENERATE PDF LABELS (jsPDF) ===
+    const fullBoxes = Math.floor(total / perBox);
+    const pico = total % perBox;
+    const totalLabelsToPrint = fullBoxes + (pico > 0 ? 1 : 0);
+
+    if (useInventoryStore.getState().deductStock(nutcode, total)) {
+      labelsPrintedToday += totalLabelsToPrint;
+      updateStats();
+
       if (window.jspdf) {
         const { jsPDF } = window.jspdf;
-        // Etiqueta tamaño estándar A6 (105x148mm) apaisada (landscape)
         const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a6' });
-        
         let isFirstPage = true;
 
         const drawLabel = (qty, isPico) => {
           if (!isFirstPage) doc.addPage();
           isFirstPage = false;
-          
           doc.setLineWidth(1);
-          doc.rect(5, 5, 138, 95); // Border
-          
+          doc.rect(5, 5, 138, 95);
           doc.setFontSize(16);
-          doc.setFont("helvetica", "bold");
-          doc.text("ESINSA GASKET - ETIQUETA EXPEDICIÓN", 74, 15, { align: 'center' });
-          
+          doc.setFont('helvetica', 'bold');
+          doc.text('ESINSA GASKET - ETIQUETA EXPEDICIÓN', 74, 15, { align: 'center' });
           doc.setLineWidth(0.5);
           doc.line(10, 20, 138, 20);
-
           doc.setFontSize(22);
-          doc.setFont("helvetica", "bold");
+          doc.setFont('helvetica', 'bold');
           doc.text(nutcode, 10, 35);
-          
           doc.setFontSize(14);
-          doc.setFont("helvetica", "normal");
+          doc.setFont('helvetica', 'normal');
           doc.text(item.desc, 10, 45);
-          
-          // Simulated Barcode
-          doc.setFont("courier", "normal");
+          doc.setFont('courier', 'normal');
           doc.setFontSize(30);
           doc.text(`*${nutcode}*`, 10, 65);
-
-          // Box Quantity
-          doc.setFont("helvetica", "bold");
+          doc.setFont('helvetica', 'bold');
           doc.setFontSize(28);
           doc.text(`CANT: ${qty}`, 10, 85);
-          
           if (isPico) {
             doc.setFillColor(0, 0, 0);
             doc.rect(90, 75, 40, 15, 'F');
             doc.setTextColor(255, 255, 255);
             doc.setFontSize(16);
-            doc.text("PICO / EXTRA", 110, 85, { align: 'center' });
-            doc.setTextColor(0, 0, 0); // reset
+            doc.text('PICO / EXTRA', 110, 85, { align: 'center' });
+            doc.setTextColor(0, 0, 0);
           }
-          
           doc.setFontSize(10);
-          doc.setFont("helvetica", "normal");
+          doc.setFont('helvetica', 'normal');
           doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, 95);
         };
 
-        // Print full boxes
-        for(let i=0; i<fullBoxes; i++) drawLabel(perBox, false);
-        // Print pico box
+        for (let i = 0; i < fullBoxes; i++) drawLabel(perBox, false);
         if (pico > 0) drawLabel(pico, true);
-
         doc.save(`Esinsa_Etiquetas_${nutcode}_${Date.now()}.pdf`);
       } else {
-        alert('Error: jsPDF no está cargado. No se generó el PDF.');
+        alert('Error: jsPDF no está cargado.');
       }
-      
-      alert(`✅ Stock reducido en ${total} uds.\nEl archivo PDF con ${totalLabelsToPrint} etiquetas se está descargando.`);
+      alert(`Stock reducido en ${total} uds. PDF con ${totalLabelsToPrint} etiquetas descargado.`);
     }
   });
 
-  // === EXCEL SYNC LOGIC ===
+  // === Excel Sync ===
   const btnExport = document.getElementById('btn-export-excel');
   const btnImport = document.getElementById('btn-import-excel');
   const fileImport = document.getElementById('input-import-excel') as HTMLInputElement;
 
   btnExport.addEventListener('click', () => {
-    if(!window.XLSX) return alert("SheetJS no está cargado.");
-    const ws = window.XLSX.utils.json_to_sheet(inventory.map(i => ({
+    if (!window.XLSX) return alert('SheetJS no está cargado.');
+    const items = useInventoryStore.getState().items;
+    const ws = window.XLSX.utils.json_to_sheet(items.map(i => ({
       NUTCODE: i.nutcode,
       Descripción: i.desc,
       Tipo: i.type,
       Ubicación: i.loc,
-      Stock: i.stock
+      Stock: i.stock,
     })));
     const wb = window.XLSX.utils.book_new();
-    window.XLSX.utils.book_append_sheet(wb, ws, "Inventario Esinsa");
+    window.XLSX.utils.book_append_sheet(wb, ws, 'Inventario Esinsa');
     window.XLSX.writeFile(wb, `Inventario_${new Date().toISOString().split('T')[0]}.xlsx`);
   });
 
@@ -493,53 +308,44 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 
   fileImport.addEventListener('change', (e) => {
     const file = e.target.files[0];
-    if(!file) return;
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = (evt) => {
       try {
-        if(!window.XLSX) return alert("SheetJS no está cargado.");
-        const data = evt.target.result;
-        const workbook = window.XLSX.read(data, { type: 'binary' });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const json = window.XLSX.utils.sheet_to_json(worksheet);
-        
-        // Merge or replace
+        if (!window.XLSX) return alert('SheetJS no está cargado.');
+        const workbook = window.XLSX.read(evt.target.result, { type: 'binary' });
+        const json = window.XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+        const store = useInventoryStore.getState();
         let added = 0;
-        json.forEach((row: any) => {
-          if (row.NUTCODE) {
-            const existing = inventory.find(i => i.nutcode === row.NUTCODE);
-            if (existing) {
-              existing.desc = row['Descripción'] || row.desc || existing.desc;
-              existing.stock = parseInt(row['Stock'] || row.stock || existing.stock, 10);
-              existing.loc = row['Ubicación'] || row.loc || existing.loc;
-              existing.type = row['Tipo'] || row.type || existing.type;
-            } else {
-              inventory.push({
-                id: Date.now() + Math.random(),
-                nutcode: row.NUTCODE,
-                desc: row['Descripción'] || row.desc || '',
-                type: row['Tipo'] || row.type || 'Otro',
-                loc: row['Ubicación'] || row.loc || 'Sin asignar',
-                stock: parseInt(row['Stock'] || row.stock || 0, 10)
-              });
-              added++;
-            }
+        json.forEach((row) => {
+          const nutcode = row.NUTCODE || '';
+          if (!nutcode) return;
+          const existing = store.items.find(i => i.nutcode === nutcode);
+          if (existing) {
+            store.updateItem(existing.id, {
+              desc: row['Descripción'] || existing.desc,
+              stock: parseInt(row['Stock'] || existing.stock, 10),
+              loc: row['Ubicación'] || existing.loc,
+              type: row['Tipo'] || existing.type,
+            });
+          } else {
+            store.addItem({
+              desc: row['Descripción'] || '',
+              type: row['Tipo'] || 'Otro',
+              stock: parseInt(row['Stock'] || 0, 10),
+              loc: row['Ubicación'] || 'Sin asignar',
+            });
+            added++;
           }
         });
-        renderTable();
-        alert(`Sincronización completada. ${added} referencias nuevas añadidas. El resto han sido actualizadas.`);
+        updateStats();
+        alert(`Sincronización completada. ${added} nuevas referencias añadidas.`);
       } catch (err) {
         console.error(err);
         alert('Error importando el archivo Excel.');
       }
-      fileImport.value = ''; // Reset
+      fileImport.value = '';
     };
     reader.readAsBinaryString(file);
   });
-
-  // Initial render
-  renderTable();
 </script>
-
-</DashboardLayout>
