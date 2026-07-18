@@ -3,7 +3,22 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 ---
 
 <DashboardLayout title="Inventario Esinsa">
-  <div slot="header-actions" class="flex gap-2">
+  <div slot="header-actions" class="flex gap-2 flex-wrap justify-end">
+    <button
+      id="btn-export-excel"
+      class="rounded-md bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 px-3 py-2 text-sm font-medium text-emerald-600 dark:text-emerald-400 transition hover:bg-emerald-100 dark:hover:bg-emerald-900/50 flex items-center gap-1 shadow-sm"
+    >
+      <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+      Excel
+    </button>
+    <input type="file" id="input-import-excel" class="hidden" accept=".xlsx, .xls, .csv" />
+    <button
+      id="btn-import-excel"
+      class="rounded-md bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 transition hover:bg-blue-100 dark:hover:bg-blue-900/50 flex items-center gap-1 shadow-sm"
+    >
+      <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+      Sync
+    </button>
     <button
       id="open-kitting-modal"
       class="rounded-md bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-emerald-700 flex items-center gap-2 shadow-sm"
@@ -375,16 +390,152 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
     
     const idx = inventory.findIndex(i => i.nutcode === nutcode);
     if (idx > -1) {
-      inventory[idx].stock -= total;
+      const item = inventory[idx];
+      item.stock -= total;
       
       // Update labels printed stat
       const fullBoxes = Math.floor(total / perBox);
-      const pico = total % perBox > 0 ? 1 : 0;
-      labelsPrintedToday += (fullBoxes + pico);
+      const pico = total % perBox;
+      const picoLabelCount = pico > 0 ? 1 : 0;
+      const totalLabelsToPrint = fullBoxes + picoLabelCount;
+      labelsPrintedToday += totalLabelsToPrint;
       
       renderTable();
-      alert(`✅ Etiquetas enviadas a impresora.\nStock de ${nutcode} reducido en ${total} uds.`);
+
+      // === GENERATE PDF LABELS (jsPDF) ===
+      if (window.jspdf) {
+        const { jsPDF } = window.jspdf;
+        // Etiqueta tamaño estándar A6 (105x148mm) apaisada (landscape)
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a6' });
+        
+        let isFirstPage = true;
+
+        const drawLabel = (qty, isPico) => {
+          if (!isFirstPage) doc.addPage();
+          isFirstPage = false;
+          
+          doc.setLineWidth(1);
+          doc.rect(5, 5, 138, 95); // Border
+          
+          doc.setFontSize(16);
+          doc.setFont("helvetica", "bold");
+          doc.text("ESINSA GASKET - ETIQUETA EXPEDICIÓN", 74, 15, { align: 'center' });
+          
+          doc.setLineWidth(0.5);
+          doc.line(10, 20, 138, 20);
+
+          doc.setFontSize(22);
+          doc.setFont("helvetica", "bold");
+          doc.text(nutcode, 10, 35);
+          
+          doc.setFontSize(14);
+          doc.setFont("helvetica", "normal");
+          doc.text(item.desc, 10, 45);
+          
+          // Simulated Barcode
+          doc.setFont("courier", "normal");
+          doc.setFontSize(30);
+          doc.text(`*${nutcode}*`, 10, 65);
+
+          // Box Quantity
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(28);
+          doc.text(`CANT: ${qty}`, 10, 85);
+          
+          if (isPico) {
+            doc.setFillColor(0, 0, 0);
+            doc.rect(90, 75, 40, 15, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(16);
+            doc.text("PICO / EXTRA", 110, 85, { align: 'center' });
+            doc.setTextColor(0, 0, 0); // reset
+          }
+          
+          doc.setFontSize(10);
+          doc.setFont("helvetica", "normal");
+          doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, 95);
+        };
+
+        // Print full boxes
+        for(let i=0; i<fullBoxes; i++) drawLabel(perBox, false);
+        // Print pico box
+        if (pico > 0) drawLabel(pico, true);
+
+        doc.save(`Esinsa_Etiquetas_${nutcode}_${Date.now()}.pdf`);
+      } else {
+        alert('Error: jsPDF no está cargado. No se generó el PDF.');
+      }
+      
+      alert(`✅ Stock reducido en ${total} uds.\nEl archivo PDF con ${totalLabelsToPrint} etiquetas se está descargando.`);
     }
+  });
+
+  // === EXCEL SYNC LOGIC ===
+  const btnExport = document.getElementById('btn-export-excel');
+  const btnImport = document.getElementById('btn-import-excel');
+  const fileImport = document.getElementById('input-import-excel') as HTMLInputElement;
+
+  btnExport.addEventListener('click', () => {
+    if(!window.XLSX) return alert("SheetJS no está cargado.");
+    const ws = window.XLSX.utils.json_to_sheet(inventory.map(i => ({
+      NUTCODE: i.nutcode,
+      Descripción: i.desc,
+      Tipo: i.type,
+      Ubicación: i.loc,
+      Stock: i.stock
+    })));
+    const wb = window.XLSX.utils.book_new();
+    window.XLSX.utils.book_append_sheet(wb, ws, "Inventario Esinsa");
+    window.XLSX.writeFile(wb, `Inventario_${new Date().toISOString().split('T')[0]}.xlsx`);
+  });
+
+  btnImport.addEventListener('click', () => fileImport.click());
+
+  fileImport.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        if(!window.XLSX) return alert("SheetJS no está cargado.");
+        const data = evt.target.result;
+        const workbook = window.XLSX.read(data, { type: 'binary' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = window.XLSX.utils.sheet_to_json(worksheet);
+        
+        // Merge or replace
+        let added = 0;
+        json.forEach((row: any) => {
+          if (row.NUTCODE) {
+            const existing = inventory.find(i => i.nutcode === row.NUTCODE);
+            if (existing) {
+              existing.desc = row['Descripción'] || row.desc || existing.desc;
+              existing.stock = parseInt(row['Stock'] || row.stock || existing.stock, 10);
+              existing.loc = row['Ubicación'] || row.loc || existing.loc;
+              existing.type = row['Tipo'] || row.type || existing.type;
+            } else {
+              inventory.push({
+                id: Date.now() + Math.random(),
+                nutcode: row.NUTCODE,
+                desc: row['Descripción'] || row.desc || '',
+                type: row['Tipo'] || row.type || 'Otro',
+                loc: row['Ubicación'] || row.loc || 'Sin asignar',
+                stock: parseInt(row['Stock'] || row.stock || 0, 10)
+              });
+              added++;
+            }
+          }
+        });
+        renderTable();
+        alert(`Sincronización completada. ${added} referencias nuevas añadidas. El resto han sido actualizadas.`);
+      } catch (err) {
+        console.error(err);
+        alert('Error importando el archivo Excel.');
+      }
+      fileImport.value = ''; // Reset
+    };
+    reader.readAsBinaryString(file);
   });
 
   // Initial render
