@@ -1,0 +1,71 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Sidebar from '../components/Sidebar.astro';
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<BaseLayout title={title}>
+  <div class="flex h-screen overflow-hidden bg-white">
+    <input type="checkbox" id="sidebar-toggle" class="peer sr-only" />
+    
+    <label
+      for="sidebar-toggle"
+      aria-hidden="true"
+      class="fixed inset-0 z-30 hidden bg-gray-900/50 peer-checked:block lg:hidden"
+    ></label>
+
+    <Sidebar />
+
+    <div class="flex flex-1 flex-col overflow-y-auto">
+      <header class="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+        <div class="flex items-center gap-4">
+          <label
+            for="sidebar-toggle"
+            id="sidebar-toggle-label"
+            aria-expanded="false"
+            aria-controls="dashboard-sidebar"
+            class="cursor-pointer rounded-md p-2 text-gray-600 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-gray-900 peer-focus-visible:ring-offset-2 hover:bg-gray-100 lg:hidden"
+          >
+            <span class="sr-only">Toggle menu</span>
+            <svg
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </label>
+
+          <h1 class="text-lg font-semibold text-gray-900">{title}</h1>
+        </div>
+
+        <slot name="header-actions" />
+      </header>
+
+      <main class="flex-1 space-y-6 p-6">
+        <slot />
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const sidebarToggleCheckbox = document.getElementById('sidebar-toggle');
+    const sidebarToggleLabel = document.getElementById('sidebar-toggle-label');
+
+    if (sidebarToggleCheckbox && sidebarToggleLabel) {
+      sidebarToggleCheckbox.addEventListener('change', () => {
+        sidebarToggleLabel.setAttribute('aria-expanded', String((sidebarToggleCheckbox as HTMLInputElement).checked));
+      });
+    }
+  </script>
+</BaseLayout>

@@ -1,8 +1,0 @@
-node_modules/
-dist/
-# Base de datos local — Render usa disco persistente montado en /app
-warehouse.db
-warehouse.db-wal
-warehouse.db-shm
-.env
-.env.local

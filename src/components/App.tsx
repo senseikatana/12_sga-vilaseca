@@ -18,6 +18,8 @@ import SapIntegrationView from './SapIntegrationView';
 import MobileAppSimulator from './MobileAppSimulator';
 
 // initial mock/fallback data matching backend seed database
+// ESINSA Gasket: tiene una forma de hacer el picking en el almacen un poco rara:
+  // En los papeles y las etiquetas vienen los siguientes codigos: NUT0000XXX, ORDERCODE o PEDIDO: 0000XXXX (estos codigos vienen en un papel)
 const INITIAL_PRODUCTS = [
   { id: 1, sku: 'SKU-001', name: 'Palet Europeo 120x80', category: 'Palets', stock: 450, minStock: 100, location: 'A-01-01', price: 12.50 },
   { id: 2, sku: 'SKU-002', name: 'Caja Cartón 60x40x40', category: 'Embalaje', stock: 2500, minStock: 500, location: 'A-02-03', price: 1.20 },
@@ -40,9 +42,9 @@ const INITIAL_CUSTOMERS = [
 ];
 
 const INITIAL_ORDERS = [
-  { id: 1, orderNumber: 'PED-2026-001', customerName: 'Mercadona S.A.', status: 'Pendiente', priority: 'high', totalItems: 3, totalValue: 1850.50 },
-  { id: 2, orderNumber: 'PED-2026-002', customerName: 'Carrefour España', status: 'Picking', priority: 'normal', totalItems: 5, totalValue: 3250.00 },
-  { id: 3, orderNumber: 'PED-2026-003', customerName: 'El Corte Inglés', status: 'Pendiente', priority: 'normal', totalItems: 2, totalValue: 890.00 },
+  { id: 1, orderNumber: 'NUT0000491', customerName: 'Mercadona S.A.', status: 'Pendiente', priority: 'high', totalItems: 3, totalValue: 1850.50 },
+  { id: 2, orderNumber: 'NUT0000507', customerName: 'Carrefour España', status: 'Picking', priority: 'normal', totalItems: 5, totalValue: 3250.00 },
+  { id: 3, orderNumber: 'NUT0003422', customerName: 'El Corte Inglés', status: 'Pendiente', priority: 'normal', totalItems: 2, totalValue: 890.00 },
   { id: 4, orderNumber: 'PED-2026-004', customerName: 'Mercadona S.A.', status: 'Packing', priority: 'high', totalItems: 4, totalValue: 2100.00 },
   { id: 5, orderNumber: 'PED-2026-005', customerName: 'Carrefour España', status: 'Despachado', priority: 'normal', totalItems: 6, totalValue: 4500.00 },
   { id: 6, orderNumber: 'PED-2026-006', customerName: 'El Corte Inglés', status: 'Pendiente', priority: 'high', totalItems: 8, totalValue: 6750.00 },
@@ -56,16 +58,32 @@ const INITIAL_PICKING = [
   { id: 3, taskNumber: 'PICK-003', orderNumber: 'PED-2026-003', assignedTo: 'Carlos Ruiz', zone: 'C', status: 'Pendiente', totalItems: 2, pickedItems: 0 }
 ];
 
+// Agregar alumnos de Novatecnica, es una empresa donde se hacen las practicas del curso de Comercio y Ventas (Novatecnica, en Vila Seca)
 const INITIAL_STAFF = [
   { id: 1, name: 'Juan García', role: 'Administrador', status: 'Activo', zone: 'Oficina' },
   { id: 2, name: 'María López', role: 'Operario', status: 'En Ruta', zone: 'Zona B' },
   { id: 3, name: 'Carlos Ruiz', role: 'Operario', status: 'Activo', zone: 'Zona A' },
-  { id: 4, name: 'Ana Martínez', role: 'Operario', status: 'Inactivo', zone: 'Zona C' }
+  { id: 4, name: 'Ana Martínez', role: 'Operario', status: 'Inactivo', zone: 'Zona C' },
 ];
 
+const INITIAL_STUDENTS_STAFF = [
+  { id: 4, name: 'Sergio José Jurado Casado', dni: '12355929F', grupo: 2, 
+  curso: { 
+    idCurso: 'FOAP-COMT0211-26',
+    empresaFormadora: 'Novatecnica', 
+    impartidoEn: 'Vila Seca', 
+    nombreCurso: 'Activitats Auxiliars de Comerç'
+  }, 
+  role: 'Estudiante Practicas', status: 'Activo', zone: 'Alamacen Principal' },
+]
+
 const INITIAL_WHATSAPP = [
-  { id: 1, sender: 'Chofer - Luis (Transportista)', message: 'Hola, estoy llegando con el camión al muelle B. ¿Está libre?', time: '16:02', responseByAI: 'Hola Luis, sí, el muelle B está libre para descarga. Te espera el operario Carlos.' },
-  { id: 2, sender: 'Supervisor - Ramón', message: 'Necesitamos reubicar los palets de la zona C a la A urgente.', time: '15:45', responseByAI: 'Mensaje recibido Ramón. Se han generado tareas prioritarias para el equipo.' }
+  { id: 1, sender: 'Chofer - Luis (Transportista)', message: 'Hola, estoy llegando con el camión al muelle de carga, parte trasera del almacen. ¿Está libre?', 
+  time: '16:02', responseByChatbotAI: 'Hola Luis, sí, el muelle de carga/descarga está libre para descarga. Te espera el operario Yasim y Adrian' },
+  { id: 2, sender: 'Supervisor - José Ramón (ESINSA Gasket)', 
+  message: 'Necesitamos reubicar los palets de la zona A y empezar ha ubicar o hacer picking y expediciones', 
+  time: '15:45', 
+  responseByChatbotAI: 'Mensaje recibido José Ramón. Se han generado tareas prioritarias para el equipo.' }
 ];
 
 const INITIAL_SAP_LOGS = [
@@ -83,9 +101,10 @@ const translations = {
     crm: 'Clientes & CRM',
     inOrders: 'Entradas (Inbounds)',
     outOrders: 'Salidas (Outbounds)',
-    picking: 'Picking por Voz (IA)',
-    routes: 'Rutas Internas',
-    whatsapp: 'Agente WhatsApp AI',
+    autoStock: 'Stock Automatizado (MS Excel 365)',
+    picking: ['Picking Manual, alumnos de practicas montan los cajones y paletts para hacer el trabajo pesado'],
+    routes: { innerRoutes: 'Rutas Internas (Almacen)', outerRoutes: 'Rutas Externas (Destinos + Clientes)'},
+    whatsappAIBot: 'Agente WhatsApp AI',
     sap: 'SAP ERP Integration',
     users: 'Equipo y Operarios',
     search: 'Buscar en base de datos...',
