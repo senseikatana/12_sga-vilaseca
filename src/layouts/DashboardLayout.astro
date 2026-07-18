@@ -5,12 +5,13 @@ import '../styles/global.css';
 
 export interface Props {
   title: string;
+  description?: string;
 }
 
-const { title } = Astro.props;
+const { title: 'Dashboard Intranet de ESINSA Gasket, Tgna', description: 'Panel Control de SGA, Gestión Inventario en Esinsa' } = Astro.props;
 ---
 
-<BaseLayout title={title}>
+<BaseLayout title={title} description={description} >
   <div class="flex h-screen overflow-hidden bg-white dark:bg-gray-900">
     <input type="checkbox" id="sidebar-toggle" class="peer sr-only" />
     

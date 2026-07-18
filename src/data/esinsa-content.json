@@ -1,0 +1,86 @@
+{
+  "site": {
+    "name": "Esinsa Gaskets",
+    "description": "Industrial Sealing Solutions",
+    "url": "https://www.esinsagaskets.com",
+    "wp_json": "https://www.esinsagaskets.com/wp-json/"
+  },
+  "pages": {
+    "home": {
+      "url": "https://www.esinsagaskets.com/",
+      "title": "Inicio",
+      "content": "Industrial Sealing Solutions. Estamos comprometidos en brindar soluciones de sellado a nuestros clientes desde 1985, operando mediante la innovación tecnológica para dar resolución a los problemas críticos de la estanqueidad que puedan surgir en la industria y en sus diversos sectores. Nuestros productos y servicios: Juntas de estanqueidad, Tornillería industrial, Corte y plegado de materiales. Juntas a medida. ESINSA TE OFRECE: RAPIDEZ EN LA ENTREGA, ASESORAMIENTO TÉCNICO, PRODUCTOS A MEDIDA, Quality service e ingeniería aplicada."
+    },
+    "juntas": {
+      "url": "https://www.esinsagaskets.com/juntas/",
+      "title": "JOINTS - Esinsa Gaskets",
+      "meta_description": "GASKET ESINSA offers a wide range of gaskets depending on the type of sealing desired by the customer, the working conditions and those conditions that affect the durability and quality of the sealing. METAL GASKETS, SEMI-METALLIC GASKETS, NON-METALLIC GASKETS, CUSTOM-MADE GASKETS."
+    },
+    "sectores": {
+      "url": "https://www.esinsagaskets.com/sectores/",
+      "title": "Industria",
+      "content": "Página con gestión de cookies. El contenido principal se carga dinámicamente."
+    },
+    "noticias": {
+      "url": "https://www.esinsagaskets.com/noticias/",
+      "title": "Noticias - Esinsa Gaskets",
+      "posts": [
+        {
+          "title": "Esinsa Gaskets cree en las oportunidades laborales",
+          "date": "2024-09-12",
+          "link": "https://www.esinsagaskets.com/esinsa-gaskets-cree-en-las-oportunidades-laborales/"
+        },
+        {
+          "title": "La profesionalidad tiene recompensa",
+          "date": "2024-09-04"
+        },
+        {
+          "title": "Esinsa Gaskets estrena almacén vertical automatizado",
+          "date": "2024-07-24"
+        },
+        {
+          "title": "Esinsa Gaskets alcanza la autonomía energética con fuentes renovables",
+          "date": "2024-06-11"
+        }
+      ]
+    },
+    "aviso-legal": {
+      "url": "https://www.esinsagaskets.com/aviso-legal/",
+      "title": "Aviso legal",
+      "content": "OBJETO: El presente aviso legal regula el uso y utilización del sitio web www.esinsagaskets.com del que es titular ESPECIALIDADES INDUSTRIALES SUMINISTROS AUTOMOCIÓN, S.L. (ESINSA). IDENTIFICACIÓN: B43220383, domicilio en C/ Ferro, n.º 10-12, Pol. Industrial Riu Clar, 43006 Tarragona."
+    },
+    "politica-de-privacidad": {
+      "url": "https://www.esinsagaskets.com/politica-de-privacidad/",
+      "title": "Política de Privacidad",
+      "content": "Responsable: ESPECIALIDADES INDUSTRIALES SUMINISTROS AUTOMOCIÓN, S.L. - B43220383 - Domicilio: C/ Ferro, n.º 10-12, Pol. Industrial Riu Clar – 43006 – TARRAGONA - Tel. +34 977553072 - Email: esinsa@esinsa.es. Finalidad: gestionar Curriculums Vitae y procesos de selección. Derechos: acceso, rectificación, supresión."
+    }
+  },
+  "wp_pages": [
+    {
+      "id": 9053,
+      "slug": "enquesta-de-satisfaccio",
+      "title": "Enquesta de Satisfacció",
+      "link": "https://www.esinsagaskets.com/enquesta-de-satisfaccio/"
+    }
+  ],
+  "wp_posts": [
+    {
+      "id": 5467,
+      "slug": "esinsa-gaskets-cree-en-las-oportunidades-laborales",
+      "title": "Esinsa Gaskets cree en las oportunidades laborales",
+      "date": "2024-09-12",
+      "link": "https://www.esinsagaskets.com/esinsa-gaskets-cree-en-las-oportunidades-laborales/",
+      "excerpt": "Un convenio de prácticas con el Servei d'Ocupació de Catalunya (SOC) ha permitido este año la incorporación en plantilla de cuatro personas en el área de logística."
+    }
+  ],
+  "media": [
+    {
+      "id": 9018,
+      "title": "MOVES-III_v",
+      "url": "https://www.esinsagaskets.com/wp-content/uploads/2021/04/MOVES-III_v.png",
+      "mime": "image/png",
+      "width": 1080,
+      "height": 1080
+    }
+  ]
+}
