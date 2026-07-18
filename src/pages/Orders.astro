@@ -3,15 +3,25 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 ---
 
 <DashboardLayout title="Orders">
-  <a slot="header-actions"
-      href="#"
-      class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+  <div slot="header-actions" class="flex gap-2">
+    <button
+      id="ai-generate-orders"
+      class="rounded-md bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 transition hover:bg-indigo-100 dark:hover:bg-indigo-900/50 flex items-center gap-2"
     >
-      Export orders
-    </a>
+      <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>
+      <span data-i18n="Generate with AI" data-en="Generate with AI" data-es="Generar con IA">Generate with AI</span>
+    </button>
+    <button
+        id="open-add-order-modal"
+        class="rounded-md bg-gray-900 dark:bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800 dark:hover:bg-indigo-700"
+        data-i18n="New Order" data-en="New Order" data-es="Nuevo pedido"
+      >
+        New Order
+    </button>
+  </div>
 
-  <div class="rounded-lg border border-gray-200 bg-white p-6">
-      <h2 class="text-sm font-medium text-gray-900">Orders vs monthly target</h2>
+  <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
+      <h2 class="text-sm font-medium text-gray-900 dark:text-white" data-i18n="Orders vs monthly target" data-en="Orders vs monthly target" data-es="Pedidos vs objetivo mensual">Orders vs monthly target</h2>
 
       <div class="mt-4 h-64">
         <canvas
@@ -22,9 +32,9 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       </div>
     </div>
 
-    <div class="rounded-lg border border-gray-200 bg-white p-6">
+    <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 class="text-sm font-medium text-gray-900">All orders</h2>
+        <h2 class="text-sm font-medium text-gray-900 dark:text-white" data-i18n="All orders" data-en="All orders" data-es="Todos los pedidos">All orders</h2>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
           <label for="order-search-input" class="sr-only">Search orders</label>
@@ -34,7 +44,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
               type="text"
               id="order-search-input"
               placeholder="Search orders"
-              class="w-full rounded-md border-gray-200 py-1.5 text-sm text-gray-900 shadow-xs ltr:pr-9 rtl:pl-9 sm:w-56"
+              class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-1.5 text-sm text-gray-900 dark:text-white shadow-xs ltr:pr-9 rtl:pl-9 sm:w-56"
             />
 
             <span
@@ -58,39 +68,36 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
             </span>
           </div>
 
-          <div class="inline-flex rounded-md border border-gray-200 p-0.5 text-xs font-medium">
+          <div class="inline-flex rounded-md border border-gray-200 dark:border-gray-700 p-0.5 text-xs font-medium">
             <button
               type="button"
               data-order-status-filter="all"
               aria-pressed="true"
-              class="rounded-sm bg-gray-100 px-2 py-1 text-gray-900"
+              class="rounded-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 text-gray-900 dark:text-white"
             >
               All
             </button>
-
             <button
               type="button"
               data-order-status-filter="paid"
               aria-pressed="false"
-              class="rounded-sm px-2 py-1 text-gray-600"
+              class="rounded-sm px-2 py-1 text-gray-600 dark:text-gray-400"
             >
               Paid
             </button>
-
             <button
               type="button"
               data-order-status-filter="pending"
               aria-pressed="false"
-              class="rounded-sm px-2 py-1 text-gray-600"
+              class="rounded-sm px-2 py-1 text-gray-600 dark:text-gray-400"
             >
               Pending
             </button>
-
             <button
               type="button"
               data-order-status-filter="refunded"
               aria-pressed="false"
-              class="rounded-sm px-2 py-1 text-gray-600"
+              class="rounded-sm px-2 py-1 text-gray-600 dark:text-gray-400"
             >
               Refunded
             </button>
@@ -99,104 +106,21 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       </div>
 
       <div class="mt-4 overflow-x-auto">
-        <table class="min-w-full divide-y-2 divide-gray-200">
+        <table class="min-w-full divide-y-2 divide-gray-200 dark:divide-gray-800">
           <thead class="ltr:text-left rtl:text-right">
-            <tr class="*:font-medium *:text-gray-900">
+            <tr class="*:font-medium *:text-gray-900 dark:*:text-gray-300">
               <th class="px-3 py-2 whitespace-nowrap">Order</th>
               <th class="px-3 py-2 whitespace-nowrap">Customer</th>
-              <th class="px-3 py-2 whitespace-nowrap">Date</th>
               <th class="px-3 py-2 whitespace-nowrap">Status</th>
               <th class="px-3 py-2 whitespace-nowrap">Amount</th>
+              <th class="px-3 py-2 whitespace-nowrap">Actions</th>
             </tr>
           </thead>
 
-          <tbody class="divide-y divide-gray-200">
-            <tr data-order-row data-order-status="paid" class="*:text-gray-900 *:first:font-medium">
-              <td class="px-3 py-2 whitespace-nowrap">#3921</td>
-              <td class="px-3 py-2 whitespace-nowrap">Nandor the Relentless</td>
-              <td class="px-3 py-2 whitespace-nowrap">Jun 12, 2025</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs text-green-700">
-                  Paid
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">$412.00</td>
-            </tr>
-
-            <tr
-              data-order-row
-              data-order-status="pending"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">#3920</td>
-              <td class="px-3 py-2 whitespace-nowrap">Laszlo Cravensworth</td>
-              <td class="px-3 py-2 whitespace-nowrap">Jun 11, 2025</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs text-yellow-700">
-                  Pending
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">$128.50</td>
-            </tr>
-
-            <tr data-order-row data-order-status="paid" class="*:text-gray-900 *:first:font-medium">
-              <td class="px-3 py-2 whitespace-nowrap">#3919</td>
-              <td class="px-3 py-2 whitespace-nowrap">Nadja</td>
-              <td class="px-3 py-2 whitespace-nowrap">Jun 10, 2025</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs text-green-700">
-                  Paid
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">$894.20</td>
-            </tr>
-
-            <tr
-              data-order-row
-              data-order-status="refunded"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">#3918</td>
-              <td class="px-3 py-2 whitespace-nowrap">Guillermo de la Cruz</td>
-              <td class="px-3 py-2 whitespace-nowrap">Jun 9, 2025</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-red-100 px-2.5 py-0.5 text-xs text-red-700">
-                  Refunded
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">$56.00</td>
-            </tr>
-
-            <tr data-order-row data-order-status="paid" class="*:text-gray-900 *:first:font-medium">
-              <td class="px-3 py-2 whitespace-nowrap">#3917</td>
-              <td class="px-3 py-2 whitespace-nowrap">Colin Robinson</td>
-              <td class="px-3 py-2 whitespace-nowrap">Jun 8, 2025</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs text-green-700">
-                  Paid
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">$219.75</td>
-            </tr>
-
-            <tr
-              data-order-row
-              data-order-status="pending"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">#3916</td>
-              <td class="px-3 py-2 whitespace-nowrap">The Guide</td>
-              <td class="px-3 py-2 whitespace-nowrap">Jun 7, 2025</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs text-yellow-700">
-                  Pending
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">$63.40</td>
-            </tr>
-
+          <tbody id="orders-table-body" class="divide-y divide-gray-200 dark:divide-gray-800">
+            <!-- Rendered by JS -->
             <tr id="orders-empty-row" class="hidden">
-              <td class="px-3 py-6 text-center text-gray-600" colspan="5">
+              <td class="px-3 py-6 text-center text-gray-600 dark:text-gray-400" colspan="5">
                 No orders match your search.
               </td>
             </tr>
@@ -205,123 +129,204 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       </div>
     </div>
 
+    <!-- CRUD Modal Dialog -->
+    <dialog id="order-modal" class="backdrop:bg-gray-900/50 open:flex flex-col p-6 rounded-xl shadow-xl w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white mx-auto mt-20">
+      <h3 id="order-modal-title" class="text-lg font-bold mb-4">Add Order</h3>
+      <form id="order-form" method="dialog" class="space-y-4">
+        <input type="hidden" id="order-id" />
+        <div>
+          <label class="block text-sm font-medium mb-1">Order #</label>
+          <input type="text" id="order-number" required class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Customer</label>
+          <input type="text" id="order-customer" required class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Status</label>
+          <select id="order-status" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm">
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="refunded">Refunded</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Amount ($)</label>
+          <input type="number" id="order-amount" step="0.01" required class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
+        </div>
+        <div class="flex justify-end gap-2 mt-6">
+          <button type="button" id="close-order-modal" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md">Cancel</button>
+          <button type="submit" class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md">Save</button>
+        </div>
+      </form>
+    </dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 <script>
-  const ordersTargetComboChartCanvas = document.getElementById('orders-target-combo-chart')
+  let orders = [
+    { id: 1, number: '#3921', customer: 'Nandor the Relentless', status: 'paid', amount: 412.00 },
+    { id: 2, number: '#3920', customer: 'Laszlo Cravensworth', status: 'pending', amount: 128.50 },
+    { id: 3, number: '#3919', customer: 'Nadja', status: 'paid', amount: 894.20 },
+    { id: 4, number: '#3918', customer: 'Guillermo de la Cruz', status: 'refunded', amount: 56.00 }
+  ];
 
-  new Chart(ordersTargetComboChartCanvas, {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [
-        {
-          type: 'bar',
-          label: 'Orders',
-          data: [210, 245, 228, 268, 289, 312],
-          backgroundColor: '#4f46e5',
-          hoverBackgroundColor: '#4338ca',
-          borderRadius: 4,
-          maxBarThickness: 32,
-          order: 2,
-        },
-        {
-          type: 'line',
-          label: 'Target',
-          data: [230, 230, 230, 260, 260, 260],
-          borderColor: '#f59e0b',
-          backgroundColor: '#f59e0b',
-          borderWidth: 2,
-          borderDash: [6, 4],
-          pointRadius: 0,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: '#f59e0b',
-          pointHoverBorderColor: '#ffffff',
-          pointHoverBorderWidth: 2,
-          tension: 0,
-          fill: false,
-          order: 1,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false,
-      },
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#4b5563' },
-        },
-        tooltip: {
-          callbacks: {
-            label: (tooltipItem) => `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue}`,
-          },
-        },
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: '#4b5563' },
-        },
-        y: {
-          beginAtZero: true,
-          grid: { color: '#e5e7eb' },
-          ticks: { color: '#4b5563' },
-        },
-      },
-    },
-  })
+  const tbody = document.getElementById('orders-table-body');
+  const emptyRow = document.getElementById('orders-empty-row');
+  const searchInput = document.getElementById('order-search-input') as HTMLInputElement;
+  const statusFilterBtns = document.querySelectorAll('[data-order-status-filter]');
+  let currentFilter = 'all';
 
-  const orderSearchInput = document.getElementById('order-search-input')
-  const orderStatusFilterButtons = document.querySelectorAll('[data-order-status-filter]')
-  const orderRows = document.querySelectorAll('[data-order-row]')
-  const ordersEmptyRow = document.getElementById('orders-empty-row')
-
-  let selectedOrderStatusFilter = 'all'
-
-  function refreshOrderRows() {
-    const searchTerm = orderSearchInput.value.trim().toLowerCase()
-
-    let visibleRowCount = 0
-
-    orderRows.forEach((orderRow) => {
-      const matchesSearch = orderRow.textContent.toLowerCase().includes(searchTerm)
-      const matchesStatus =
-        selectedOrderStatusFilter === 'all' ||
-        orderRow.dataset.orderStatus === selectedOrderStatusFilter
-      const isRowVisible = matchesSearch && matchesStatus
-
-      orderRow.classList.toggle('hidden', !isRowVisible)
-
-      if (isRowVisible) {
-        visibleRowCount += 1
-      }
-    })
-
-    ordersEmptyRow.classList.toggle('hidden', visibleRowCount > 0)
+  function getStatusBadge(status: string) {
+    if (status === 'paid') return '<span class="rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 text-xs text-green-700 dark:text-green-400">Paid</span>';
+    if (status === 'pending') return '<span class="rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-2.5 py-0.5 text-xs text-yellow-700 dark:text-yellow-400">Pending</span>';
+    return '<span class="rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 text-xs text-red-700 dark:text-red-400">Refunded</span>';
   }
 
-  orderSearchInput.addEventListener('input', refreshOrderRows)
+  function renderTable() {
+    const rows = tbody.querySelectorAll('tr[data-order-row]');
+    rows.forEach(r => r.remove());
 
-  orderStatusFilterButtons.forEach((orderStatusFilterButton) => {
-    orderStatusFilterButton.addEventListener('click', () => {
-      selectedOrderStatusFilter = orderStatusFilterButton.dataset.orderStatusFilter
+    const term = searchInput.value.toLowerCase();
+    let visible = 0;
 
-      orderStatusFilterButtons.forEach((otherFilterButton) => {
-        const isSelectedButton = otherFilterButton === orderStatusFilterButton
+    orders.forEach(o => {
+      if (currentFilter !== 'all' && o.status !== currentFilter) return;
+      if (!o.number.toLowerCase().includes(term) && !o.customer.toLowerCase().includes(term)) return;
+      
+      visible++;
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-order-row', 'true');
+      tr.className = '*:text-gray-900 dark:*:text-gray-300 *:first:font-medium border-t border-gray-200 dark:border-gray-800';
+      tr.innerHTML = `
+        <td class="px-3 py-3 whitespace-nowrap">${o.number}</td>
+        <td class="px-3 py-3 whitespace-nowrap">${o.customer}</td>
+        <td class="px-3 py-3 whitespace-nowrap">${getStatusBadge(o.status)}</td>
+        <td class="px-3 py-3 whitespace-nowrap">$${o.amount.toFixed(2)}</td>
+        <td class="px-3 py-3 whitespace-nowrap">
+          <button onclick="window.editOrder(${o.id})" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-2 text-sm">Edit</button>
+          <button onclick="window.deleteOrder(${o.id})" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
 
-        otherFilterButton.setAttribute('aria-pressed', String(isSelectedButton))
-        otherFilterButton.classList.toggle('bg-gray-100', isSelectedButton)
-        otherFilterButton.classList.toggle('text-gray-900', isSelectedButton)
-        otherFilterButton.classList.toggle('text-gray-600', !isSelectedButton)
-      })
+    emptyRow.classList.toggle('hidden', visible > 0);
+  }
 
-      refreshOrderRows()
+  searchInput.addEventListener('input', renderTable);
+  
+  statusFilterBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      currentFilter = (e.currentTarget as HTMLElement).dataset.orderStatusFilter;
+      statusFilterBtns.forEach(b => {
+        const isSel = b === e.currentTarget;
+        b.classList.toggle('bg-gray-100', isSel);
+        b.classList.toggle('dark:bg-gray-800', isSel);
+        b.classList.toggle('text-gray-900', isSel);
+        b.classList.toggle('dark:text-white', isSel);
+        b.classList.toggle('text-gray-600', !isSel);
+      });
+      renderTable();
+    });
+  });
+
+  // Modal logic
+  const modal = document.getElementById('order-modal') as HTMLDialogElement;
+  const form = document.getElementById('order-form') as HTMLFormElement;
+  const openBtn = document.getElementById('open-add-order-modal');
+  const closeBtn = document.getElementById('close-order-modal');
+
+  openBtn.addEventListener('click', () => {
+    form.reset();
+    document.getElementById('order-id').value = '';
+    document.getElementById('order-modal-title').textContent = 'Add Order';
+    modal.showModal();
+  });
+
+  closeBtn.addEventListener('click', () => modal.close());
+
+  form.addEventListener('submit', (e) => {
+    const id = document.getElementById('order-id').value;
+    const number = (document.getElementById('order-number') as HTMLInputElement).value;
+    const customer = (document.getElementById('order-customer') as HTMLInputElement).value;
+    const status = (document.getElementById('order-status') as HTMLSelectElement).value;
+    const amount = parseFloat((document.getElementById('order-amount') as HTMLInputElement).value);
+
+    if (id) {
+      const idx = orders.findIndex(o => o.id == id);
+      if (idx > -1) orders[idx] = { ...orders[idx], number, customer, status, amount };
+    } else {
+      orders.push({ id: Date.now(), number, customer, status, amount });
+    }
+    renderTable();
+  });
+
+  window.editOrder = (id) => {
+    const o = orders.find(o => o.id === id);
+    if (!o) return;
+    document.getElementById('order-id').value = o.id;
+    (document.getElementById('order-number') as HTMLInputElement).value = o.number;
+    (document.getElementById('order-customer') as HTMLInputElement).value = o.customer;
+    (document.getElementById('order-status') as HTMLSelectElement).value = o.status;
+    (document.getElementById('order-amount') as HTMLInputElement).value = o.amount;
+    document.getElementById('order-modal-title').textContent = 'Edit Order';
+    modal.showModal();
+  };
+
+  window.deleteOrder = (id) => {
+    if (confirm('Are you sure you want to delete this order?')) {
+      orders = orders.filter(o => o.id !== id);
+      renderTable();
+    }
+  };
+
+  // Initial render
+  renderTable();
+
+  // AI Generate Logic
+  const aiGenerateBtn = document.getElementById('ai-generate-orders');
+  aiGenerateBtn.addEventListener('click', () => {
+    aiGenerateBtn.innerHTML = '<span class="animate-spin size-4 inline-block border-2 border-current border-t-transparent rounded-full"></span> Generating...';
+    setTimeout(() => {
+      const mockNames = ['Alice Liddell', 'Bob Ross', 'Charlie Brown', 'Diana Prince', 'Bruce Wayne'];
+      const newOrders = Array.from({length: 3}).map((_, i) => {
+        return {
+          id: Date.now() + i,
+          number: '#' + Math.floor(4000 + Math.random() * 1000),
+          customer: mockNames[Math.floor(Math.random() * mockNames.length)],
+          status: ['paid', 'pending', 'refunded'][Math.floor(Math.random() * 3)],
+          amount: parseFloat((Math.random() * 500 + 10).toFixed(2))
+        };
+      });
+      orders.push(...newOrders);
+      renderTable();
+      aiGenerateBtn.innerHTML = '<svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg> <span data-i18n="Generate with AI" data-en="Generate with AI" data-es="Generar con IA">Generate with AI</span>';
+      if(window.updateLanguage) window.updateLanguage(document.documentElement.lang);
+    }, 1500);
+  });
+
+  // Chart setup
+  const ordersTargetComboChartCanvas = document.getElementById('orders-target-combo-chart') as HTMLCanvasElement
+  if (ordersTargetComboChartCanvas) {
+    new Chart(ordersTargetComboChartCanvas, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [
+          { type: 'bar', label: 'Orders', data: [210, 245, 228, 268, 289, 312], backgroundColor: '#4f46e5', borderRadius: 4, maxBarThickness: 32, order: 2 },
+          { type: 'line', label: 'Target', data: [230, 230, 230, 260, 260, 260], borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2, borderDash: [6, 4], pointRadius: 0, fill: false, order: 1 },
+        ],
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#9ca3af' } },
+          y: { beginAtZero: true, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+        },
+      },
     })
-  })
+  }
 </script>
 
 </DashboardLayout>

@@ -11,7 +11,7 @@ const { title } = Astro.props;
 ---
 
 <BaseLayout title={title}>
-  <div class="flex h-screen overflow-hidden bg-white">
+  <div class="flex h-screen overflow-hidden bg-white dark:bg-gray-900">
     <input type="checkbox" id="sidebar-toggle" class="peer sr-only" />
     
     <label
@@ -23,14 +23,14 @@ const { title } = Astro.props;
     <Sidebar />
 
     <div class="flex flex-1 flex-col overflow-y-auto">
-      <header class="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
+      <header class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-6 py-4">
         <div class="flex items-center gap-4">
           <label
             for="sidebar-toggle"
             id="sidebar-toggle-label"
             aria-expanded="false"
             aria-controls="dashboard-sidebar"
-            class="cursor-pointer rounded-md p-2 text-gray-600 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-gray-900 peer-focus-visible:ring-offset-2 hover:bg-gray-100 lg:hidden"
+            class="cursor-pointer rounded-md p-2 text-gray-600 dark:text-gray-300 transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-gray-900 peer-focus-visible:ring-offset-2 hover:bg-gray-100 dark:hover:bg-gray-800 lg:hidden"
           >
             <span class="sr-only">Toggle menu</span>
             <svg
@@ -46,14 +46,48 @@ const { title } = Astro.props;
             </svg>
           </label>
 
-          <h1 class="text-lg font-semibold text-gray-900">{title}</h1>
+          <h1 class="text-lg font-semibold text-gray-900 dark:text-white" data-i18n={title} data-en={title} data-es={title}>{title}</h1>
         </div>
 
-        <slot name="header-actions" />
+        <div class="flex items-center gap-4">
+          <button 
+            onclick="window.toggleLanguage()"
+            class="hidden sm:block text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
+          >
+            <span class="lang-es-text">ES / EN</span>
+          </button>
+          
+          <slot name="header-actions" />
+        </div>
       </header>
 
-      <main class="flex-1 space-y-6 p-6">
+      <main class="flex-1 space-y-6 p-6 relative">
         <slot />
+
+        <!-- Floating AI Agent -->
+        <div class="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+          <div id="ai-chat-window" class="hidden w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl mb-4 overflow-hidden flex flex-col h-96 transition-all">
+            <div class="bg-indigo-600 p-3 flex justify-between items-center text-white">
+              <div class="flex items-center gap-2">
+                <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>
+                <span class="font-medium text-sm" data-i18n="AI Agent" data-en="AI Agent" data-es="Agente IA">AI Agent</span>
+              </div>
+              <button id="close-ai-chat" class="hover:bg-indigo-700 p-1 rounded-md"><svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg></button>
+            </div>
+            <div id="ai-chat-messages" class="flex-1 p-3 overflow-y-auto space-y-3 bg-gray-50 dark:bg-gray-900 text-sm">
+              <div class="bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-200 p-2 rounded-lg max-w-[85%]">
+                Hi! I can help you automate CRUD operations. Try typing "generate 3 orders" or "add a customer".
+              </div>
+            </div>
+            <div class="p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex gap-2">
+              <input type="text" id="ai-chat-input" placeholder="Type a command..." class="flex-1 rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white px-3 py-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <button id="send-ai-msg" class="bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-md transition-colors"><svg class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" /></svg></button>
+            </div>
+          </div>
+          <button id="toggle-ai-chat" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-full shadow-lg transition-transform hover:scale-105 flex items-center justify-center">
+            <svg class="size-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>
+          </button>
+        </div>
       </main>
     </div>
   </div>
@@ -65,6 +99,71 @@ const { title } = Astro.props;
     if (sidebarToggleCheckbox && sidebarToggleLabel) {
       sidebarToggleCheckbox.addEventListener('change', () => {
         sidebarToggleLabel.setAttribute('aria-expanded', String((sidebarToggleCheckbox as HTMLInputElement).checked));
+      });
+    }
+
+    // AI Chat widget logic
+    const toggleBtn = document.getElementById('toggle-ai-chat');
+    const closeBtn = document.getElementById('close-ai-chat');
+    const chatWindow = document.getElementById('ai-chat-window');
+    const inputField = document.getElementById('ai-chat-input');
+    const sendBtn = document.getElementById('send-ai-msg');
+    const msgsContainer = document.getElementById('ai-chat-messages');
+
+    if (toggleBtn && chatWindow) {
+      toggleBtn.addEventListener('click', () => {
+        chatWindow.classList.toggle('hidden');
+        if (!chatWindow.classList.contains('hidden')) inputField.focus();
+      });
+      closeBtn.addEventListener('click', () => chatWindow.classList.add('hidden'));
+
+      const appendMessage = (text, isUser = false) => {
+        const div = document.createElement('div');
+        div.className = isUser 
+          ? 'bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 p-2 rounded-lg max-w-[85%] self-end ml-auto'
+          : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-900 dark:text-indigo-200 p-2 rounded-lg max-w-[85%]';
+        div.textContent = text;
+        msgsContainer.appendChild(div);
+        msgsContainer.scrollTop = msgsContainer.scrollHeight;
+      };
+
+      const handleSend = () => {
+        const text = inputField.value.trim();
+        if (!text) return;
+        appendMessage(text, true);
+        inputField.value = '';
+
+        // Simulate AI Processing
+        setTimeout(() => {
+          let response = "I've understood your command, but I need you to be on the specific page to execute it.";
+          const t = text.toLowerCase();
+          
+          if (t.includes('customer')) {
+            const genBtn = document.getElementById('ai-generate-customers');
+            if (genBtn) {
+              genBtn.click();
+              response = "I have automatically generated the customers for you!";
+            } else {
+              response = "Please navigate to the Customers page first.";
+            }
+          } else if (t.includes('order')) {
+            const genBtn = document.getElementById('ai-generate-orders');
+            if (genBtn) {
+              genBtn.click();
+              response = "I have automatically generated the orders for you!";
+            } else {
+              response = "Please navigate to the Orders page first.";
+            }
+          } else {
+            response = "I can generate orders or customers. Please tell me which one you need.";
+          }
+          appendMessage(response, false);
+        }, 1000);
+      };
+
+      sendBtn.addEventListener('click', handleSend);
+      inputField.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleSend();
       });
     }
   </script>

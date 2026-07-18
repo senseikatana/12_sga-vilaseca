@@ -3,16 +3,26 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 ---
 
 <DashboardLayout title="Customers">
-  <a slot="header-actions"
-      href="#"
-      class="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+  <div slot="header-actions" class="flex gap-2">
+    <button
+      id="ai-generate-customers"
+      class="rounded-md bg-indigo-50 dark:bg-indigo-900/30 px-4 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 transition hover:bg-indigo-100 dark:hover:bg-indigo-900/50 flex items-center gap-2"
     >
-      Add customer
-    </a>
+      <svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg>
+      <span data-i18n="Generate with AI" data-en="Generate with AI" data-es="Generar con IA">Generate with AI</span>
+    </button>
+    <button
+        id="open-add-customer-modal"
+        class="rounded-md bg-gray-900 dark:bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-800 dark:hover:bg-indigo-700"
+        data-i18n="Add customer" data-en="Add customer" data-es="Añadir cliente"
+      >
+        Add customer
+    </button>
+  </div>
 
   <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      <div class="rounded-lg border border-gray-200 bg-white p-6 lg:col-span-2">
-        <h2 class="text-sm font-medium text-gray-900">New customers</h2>
+      <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 lg:col-span-2">
+        <h2 class="text-sm font-medium text-gray-900 dark:text-white" data-i18n="New customers" data-en="New customers" data-es="Nuevos clientes">New customers</h2>
 
         <div class="mt-4 h-64">
           <canvas
@@ -23,39 +33,39 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
         </div>
       </div>
 
-      <div class="rounded-lg border border-gray-200 bg-white p-6">
-        <h2 class="text-sm font-medium text-gray-900">Customers by plan</h2>
+      <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
+        <h2 class="text-sm font-medium text-gray-900 dark:text-white" data-i18n="Customers by plan" data-en="Customers by plan" data-es="Clientes por plan">Customers by plan</h2>
 
         <ul class="mt-4 space-y-4">
           <li>
             <div class="flex items-center justify-between text-sm">
-              <span class="font-medium text-gray-900">Team</span>
-              <span class="text-gray-600">1,406</span>
+              <span class="font-medium text-gray-900 dark:text-gray-300">Team</span>
+              <span class="text-gray-600 dark:text-gray-400">1,406</span>
             </div>
 
-            <div class="mt-1.5 h-1.5 rounded-full bg-gray-100">
+            <div class="mt-1.5 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800">
               <div class="h-1.5 rounded-full bg-indigo-600" style="width: 61%"></div>
             </div>
           </li>
 
           <li>
             <div class="flex items-center justify-between text-sm">
-              <span class="font-medium text-gray-900">Starter</span>
-              <span class="text-gray-600">742</span>
+              <span class="font-medium text-gray-900 dark:text-gray-300">Starter</span>
+              <span class="text-gray-600 dark:text-gray-400">742</span>
             </div>
 
-            <div class="mt-1.5 h-1.5 rounded-full bg-gray-100">
+            <div class="mt-1.5 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800">
               <div class="h-1.5 rounded-full bg-indigo-600" style="width: 32%"></div>
             </div>
           </li>
 
           <li>
             <div class="flex items-center justify-between text-sm">
-              <span class="font-medium text-gray-900">Enterprise</span>
-              <span class="text-gray-600">170</span>
+              <span class="font-medium text-gray-900 dark:text-gray-300">Enterprise</span>
+              <span class="text-gray-600 dark:text-gray-400">170</span>
             </div>
 
-            <div class="mt-1.5 h-1.5 rounded-full bg-gray-100">
+            <div class="mt-1.5 h-1.5 rounded-full bg-gray-100 dark:bg-gray-800">
               <div class="h-1.5 rounded-full bg-indigo-600" style="width: 7%"></div>
             </div>
           </li>
@@ -63,9 +73,9 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       </div>
     </div>
 
-    <div class="rounded-lg border border-gray-200 bg-white p-6">
+    <div class="rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h2 class="text-sm font-medium text-gray-900">All customers</h2>
+        <h2 class="text-sm font-medium text-gray-900 dark:text-white" data-i18n="All customers" data-en="All customers" data-es="Todos los clientes">All customers</h2>
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
           <label for="customer-search-input" class="sr-only">Search customers</label>
@@ -75,7 +85,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
               type="text"
               id="customer-search-input"
               placeholder="Search customers"
-              class="w-full rounded-md border-gray-200 py-1.5 text-sm text-gray-900 shadow-xs ltr:pr-9 rtl:pl-9 sm:w-56"
+              class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-1.5 text-sm text-gray-900 dark:text-white shadow-xs ltr:pr-9 rtl:pl-9 sm:w-56"
             />
 
             <span
@@ -103,7 +113,7 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 
           <select
             id="customer-status-filter"
-            class="rounded-md border-gray-200 py-1.5 text-sm text-gray-900 shadow-xs"
+            class="rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 py-1.5 text-sm text-gray-900 dark:text-white shadow-xs"
           >
             <option value="all">All statuses</option>
             <option value="active">Active</option>
@@ -114,100 +124,21 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       </div>
 
       <div class="mt-4 overflow-x-auto">
-        <table class="min-w-full divide-y-2 divide-gray-200">
+        <table class="min-w-full divide-y-2 divide-gray-200 dark:divide-gray-800">
           <thead class="ltr:text-left rtl:text-right">
-            <tr class="*:font-medium *:text-gray-900">
+            <tr class="*:font-medium *:text-gray-900 dark:*:text-gray-300">
               <th class="px-3 py-2 whitespace-nowrap">Customer</th>
               <th class="px-3 py-2 whitespace-nowrap">Email</th>
               <th class="px-3 py-2 whitespace-nowrap">Plan</th>
               <th class="px-3 py-2 whitespace-nowrap">Status</th>
-              <th class="px-3 py-2 whitespace-nowrap">Joined</th>
+              <th class="px-3 py-2 whitespace-nowrap">Actions</th>
             </tr>
           </thead>
 
-          <tbody class="divide-y divide-gray-200">
-            <tr
-              data-customer-row
-              data-customer-status="active"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">Nandor the Relentless</td>
-              <td class="px-3 py-2 whitespace-nowrap">nandor@orbitly.com</td>
-              <td class="px-3 py-2 whitespace-nowrap">Team</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs text-green-700">
-                  Active
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">Feb 3, 2025</td>
-            </tr>
-
-            <tr
-              data-customer-row
-              data-customer-status="active"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">Laszlo Cravensworth</td>
-              <td class="px-3 py-2 whitespace-nowrap">laszlo@orbitly.com</td>
-              <td class="px-3 py-2 whitespace-nowrap">Enterprise</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs text-green-700">
-                  Active
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">Nov 18, 2024</td>
-            </tr>
-
-            <tr
-              data-customer-row
-              data-customer-status="trial"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">Nadja</td>
-              <td class="px-3 py-2 whitespace-nowrap">nadja@orbitly.com</td>
-              <td class="px-3 py-2 whitespace-nowrap">Team</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs text-yellow-700">
-                  Trial
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">Jun 9, 2025</td>
-            </tr>
-
-            <tr
-              data-customer-row
-              data-customer-status="past-due"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">Guillermo de la Cruz</td>
-              <td class="px-3 py-2 whitespace-nowrap">guillermo@orbitly.com</td>
-              <td class="px-3 py-2 whitespace-nowrap">Starter</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-red-100 px-2.5 py-0.5 text-xs text-red-700">
-                  Past due
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">Aug 22, 2024</td>
-            </tr>
-
-            <tr
-              data-customer-row
-              data-customer-status="active"
-              class="*:text-gray-900 *:first:font-medium"
-            >
-              <td class="px-3 py-2 whitespace-nowrap">Colin Robinson</td>
-              <td class="px-3 py-2 whitespace-nowrap">colin@orbitly.com</td>
-              <td class="px-3 py-2 whitespace-nowrap">Starter</td>
-              <td class="px-3 py-2 whitespace-nowrap">
-                <span class="rounded-full bg-green-100 px-2.5 py-0.5 text-xs text-green-700">
-                  Active
-                </span>
-              </td>
-              <td class="px-3 py-2 whitespace-nowrap">Jan 30, 2025</td>
-            </tr>
-
+          <tbody id="customers-table-body" class="divide-y divide-gray-200 dark:divide-gray-800">
+            <!-- Row template -->
             <tr id="customers-empty-row" class="hidden">
-              <td class="px-3 py-6 text-center text-gray-600" colspan="5">
+              <td class="px-3 py-6 text-center text-gray-600 dark:text-gray-400" colspan="5">
                 No customers match your search.
               </td>
             </tr>
@@ -216,83 +147,203 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       </div>
     </div>
 
+    <!-- CRUD Modal Dialog -->
+    <dialog id="customer-modal" class="backdrop:bg-gray-900/50 open:flex flex-col p-6 rounded-xl shadow-xl w-full max-w-md bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white mx-auto mt-20">
+      <h3 id="customer-modal-title" class="text-lg font-bold mb-4">Add Customer</h3>
+      <form id="customer-form" method="dialog" class="space-y-4">
+        <input type="hidden" id="customer-id" />
+        <div>
+          <label class="block text-sm font-medium mb-1">Name</label>
+          <input type="text" id="customer-name" required class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Email</label>
+          <input type="email" id="customer-email" required class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Plan</label>
+          <select id="customer-plan" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm">
+            <option value="Team">Team</option>
+            <option value="Starter">Starter</option>
+            <option value="Enterprise">Enterprise</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Status</label>
+          <select id="customer-status" class="w-full rounded-md border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm shadow-sm">
+            <option value="active">Active</option>
+            <option value="trial">Trial</option>
+            <option value="past-due">Past due</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-2 mt-6">
+          <button type="button" id="close-customer-modal" class="px-4 py-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md">Cancel</button>
+          <button type="submit" class="px-4 py-2 text-sm text-white bg-indigo-600 hover:bg-indigo-700 rounded-md">Save</button>
+        </div>
+      </form>
+    </dialog>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
 <script>
-  const newCustomersBarChartCanvas = document.getElementById('new-customers-bar-chart')
+  // Initial Mock Data
+  let customers = [
+    { id: 1, name: 'Nandor the Relentless', email: 'nandor@orbitly.com', plan: 'Team', status: 'active' },
+    { id: 2, name: 'Laszlo Cravensworth', email: 'laszlo@orbitly.com', plan: 'Enterprise', status: 'active' },
+    { id: 3, name: 'Nadja', email: 'nadja@orbitly.com', plan: 'Team', status: 'trial' },
+    { id: 4, name: 'Guillermo de la Cruz', email: 'guillermo@orbitly.com', plan: 'Starter', status: 'past-due' },
+    { id: 5, name: 'Colin Robinson', email: 'colin@orbitly.com', plan: 'Starter', status: 'active' }
+  ];
 
-  new Chart(newCustomersBarChartCanvas, {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [
-        {
+  const tbody = document.getElementById('customers-table-body');
+  const emptyRow = document.getElementById('customers-empty-row');
+  const searchInput = document.getElementById('customer-search-input') as HTMLInputElement;
+  const statusFilter = document.getElementById('customer-status-filter') as HTMLSelectElement;
+
+  function getStatusBadge(status: string) {
+    if (status === 'active') return '<span class="rounded-full bg-green-100 dark:bg-green-900/30 px-2.5 py-0.5 text-xs text-green-700 dark:text-green-400">Active</span>';
+    if (status === 'trial') return '<span class="rounded-full bg-yellow-100 dark:bg-yellow-900/30 px-2.5 py-0.5 text-xs text-yellow-700 dark:text-yellow-400">Trial</span>';
+    return '<span class="rounded-full bg-red-100 dark:bg-red-900/30 px-2.5 py-0.5 text-xs text-red-700 dark:text-red-400">Past due</span>';
+  }
+
+  function renderTable() {
+    // Clear rows except empty message
+    const rows = tbody.querySelectorAll('tr[data-customer-row]');
+    rows.forEach(r => r.remove());
+
+    const term = searchInput.value.toLowerCase();
+    const filter = statusFilter.value;
+
+    let visible = 0;
+    customers.forEach(c => {
+      if (filter !== 'all' && c.status !== filter) return;
+      if (!c.name.toLowerCase().includes(term) && !c.email.toLowerCase().includes(term)) return;
+      
+      visible++;
+      const tr = document.createElement('tr');
+      tr.setAttribute('data-customer-row', 'true');
+      tr.className = '*:text-gray-900 dark:*:text-gray-300 *:first:font-medium border-t border-gray-200 dark:border-gray-800';
+      tr.innerHTML = `
+        <td class="px-3 py-3 whitespace-nowrap">${c.name}</td>
+        <td class="px-3 py-3 whitespace-nowrap">${c.email}</td>
+        <td class="px-3 py-3 whitespace-nowrap">${c.plan}</td>
+        <td class="px-3 py-3 whitespace-nowrap">${getStatusBadge(c.status)}</td>
+        <td class="px-3 py-3 whitespace-nowrap">
+          <button onclick="window.editCustomer(${c.id})" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 mr-2 text-sm">Edit</button>
+          <button onclick="window.deleteCustomer(${c.id})" class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    emptyRow.classList.toggle('hidden', visible > 0);
+  }
+
+  searchInput.addEventListener('input', renderTable);
+  statusFilter.addEventListener('change', renderTable);
+
+  // Modal logic
+  const modal = document.getElementById('customer-modal') as HTMLDialogElement;
+  const form = document.getElementById('customer-form') as HTMLFormElement;
+  const openBtn = document.getElementById('open-add-customer-modal');
+  const closeBtn = document.getElementById('close-customer-modal');
+
+  openBtn.addEventListener('click', () => {
+    form.reset();
+    document.getElementById('customer-id').value = '';
+    document.getElementById('customer-modal-title').textContent = 'Add Customer';
+    modal.showModal();
+  });
+
+  closeBtn.addEventListener('click', () => modal.close());
+
+  form.addEventListener('submit', (e) => {
+    const id = document.getElementById('customer-id').value;
+    const name = (document.getElementById('customer-name') as HTMLInputElement).value;
+    const email = (document.getElementById('customer-email') as HTMLInputElement).value;
+    const plan = (document.getElementById('customer-plan') as HTMLSelectElement).value;
+    const status = (document.getElementById('customer-status') as HTMLSelectElement).value;
+
+    if (id) {
+      const idx = customers.findIndex(c => c.id == id);
+      if (idx > -1) customers[idx] = { ...customers[idx], name, email, plan, status };
+    } else {
+      customers.push({ id: Date.now(), name, email, plan, status });
+    }
+    renderTable();
+  });
+
+  window.editCustomer = (id) => {
+    const c = customers.find(c => c.id === id);
+    if (!c) return;
+    document.getElementById('customer-id').value = c.id;
+    (document.getElementById('customer-name') as HTMLInputElement).value = c.name;
+    (document.getElementById('customer-email') as HTMLInputElement).value = c.email;
+    (document.getElementById('customer-plan') as HTMLSelectElement).value = c.plan;
+    (document.getElementById('customer-status') as HTMLSelectElement).value = c.status;
+    document.getElementById('customer-modal-title').textContent = 'Edit Customer';
+    modal.showModal();
+  };
+
+  window.deleteCustomer = (id) => {
+    if (confirm('Are you sure you want to delete this customer?')) {
+      customers = customers.filter(c => c.id !== id);
+      renderTable();
+    }
+  };
+
+  // Initial render
+  renderTable();
+
+  // AI Generate Logic
+  const aiGenerateBtn = document.getElementById('ai-generate-customers');
+  aiGenerateBtn.addEventListener('click', () => {
+    aiGenerateBtn.innerHTML = '<span class="animate-spin size-4 inline-block border-2 border-current border-t-transparent rounded-full"></span> Generating...';
+    setTimeout(() => {
+      const mockNames = ['Acme Corp', 'Stark Industries', 'Wayne Enterprises', 'Globex', 'Soylent Corp'];
+      const newCustomers = Array.from({length: 3}).map((_, i) => {
+        const name = mockNames[Math.floor(Math.random() * mockNames.length)] + ' ' + Math.floor(Math.random() * 100);
+        return {
+          id: Date.now() + i,
+          name,
+          email: name.replace(/ /g, '').toLowerCase() + '@example.com',
+          plan: ['Team', 'Starter', 'Enterprise'][Math.floor(Math.random() * 3)],
+          status: ['active', 'trial', 'past-due'][Math.floor(Math.random() * 3)]
+        };
+      });
+      customers.push(...newCustomers);
+      renderTable();
+      aiGenerateBtn.innerHTML = '<svg class="size-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09l2.846.813-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" /></svg> <span data-i18n="Generate with AI" data-en="Generate with AI" data-es="Generar con IA">Generate with AI</span>';
+      if(window.updateLanguage) window.updateLanguage(document.documentElement.lang);
+    }, 1500);
+  });
+
+  // Chart setup
+  const newCustomersBarChartCanvas = document.getElementById('new-customers-bar-chart') as HTMLCanvasElement
+  if (newCustomersBarChartCanvas) {
+    new Chart(newCustomersBarChartCanvas, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
           label: 'New customers',
           data: [82, 95, 88, 110, 104, 128],
           backgroundColor: '#4f46e5',
           hoverBackgroundColor: '#4338ca',
           borderRadius: 4,
           maxBarThickness: 32,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false,
+        }],
       },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: (tooltipItem) => `${tooltipItem.formattedValue} customers`,
-          },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#9ca3af' } },
+          y: { beginAtZero: true, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
         },
       },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { color: '#4b5563' },
-        },
-        y: {
-          beginAtZero: true,
-          grid: { color: '#e5e7eb' },
-          ticks: { color: '#4b5563' },
-        },
-      },
-    },
-  })
-
-  const customerSearchInput = document.getElementById('customer-search-input')
-  const customerStatusFilter = document.getElementById('customer-status-filter')
-  const customerRows = document.querySelectorAll('[data-customer-row]')
-  const customersEmptyRow = document.getElementById('customers-empty-row')
-
-  function refreshCustomerRows() {
-    const searchTerm = customerSearchInput.value.trim().toLowerCase()
-    const selectedStatus = customerStatusFilter.value
-
-    let visibleRowCount = 0
-
-    customerRows.forEach((customerRow) => {
-      const matchesSearch = customerRow.textContent.toLowerCase().includes(searchTerm)
-      const matchesStatus =
-        selectedStatus === 'all' || customerRow.dataset.customerStatus === selectedStatus
-      const isRowVisible = matchesSearch && matchesStatus
-
-      customerRow.classList.toggle('hidden', !isRowVisible)
-
-      if (isRowVisible) {
-        visibleRowCount += 1
-      }
     })
-
-    customersEmptyRow.classList.toggle('hidden', visibleRowCount > 0)
   }
-
-  customerSearchInput.addEventListener('input', refreshCustomerRows)
-  customerStatusFilter.addEventListener('change', refreshCustomerRows)
 </script>
 
 </DashboardLayout>

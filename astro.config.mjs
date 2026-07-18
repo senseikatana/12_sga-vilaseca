@@ -4,7 +4,6 @@ import tailwind from '@astrojs/tailwind';
 
 // En GitHub Pages el repo se sirve en /sga-vilaseca/
 // En Render o localhost se sirve en /
-const isProd = process.env.NODE_ENV === 'production';
 const isGitHubPages = process.env.DEPLOY_TARGET === 'github-pages';
 
 export default defineConfig({
