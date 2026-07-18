@@ -1,8 +1,8 @@
 services:
   - type: web
-    name: sga-vilaseca-api
+    name: esinsa-sga-app
     runtime: docker
-    rootDir: backend
+    rootDir: ./
     dockerfilePath: ./Dockerfile
     envVars:
       - key: PORT
