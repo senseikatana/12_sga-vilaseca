@@ -1,0 +1,18 @@
+[2026-07-24T13:20:10.034Z] Connection update: connecting
+[2026-07-24T13:20:15.550Z] Connection update: close
+[2026-07-24T13:20:15.550Z] Connection closed. Status: 405, Reason: Connection Failure
+[2026-07-24T13:20:15.550Z] Critical error, stopping reconnection attempts
+[2026-07-24T13:20:34.290Z] Iniciando limpieza de recursos...
+[2026-07-24T13:21:43.240Z] Connection update: connecting
+[2026-07-24T13:21:43.255Z] Uncaught Exception: Error
+    at serve (unknown)
+    at <anonymous> (node:_http_server:281:39)
+    at <anonymous> (node:_http_server:258:33)
+    at listen (/home/senseikatana/Proyectos/12_esinsa-whm/node_modules/@builderbot/bot/dist/index.cjs:34626:23)
+    at start (/home/senseikatana/Proyectos/12_esinsa-whm/node_modules/@builderbot/bot/dist/index.cjs:34768:21)
+    at <anonymous> (/home/senseikatana/Proyectos/12_esinsa-whm/node_modules/@builderbot/bot/dist/index.cjs:34722:22)
+    at processTicksAndRejections (unknown:7:39) {
+  code: 'EADDRINUSE',
+  syscall: 'listen',
+  errno: 0
+}

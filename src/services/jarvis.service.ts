@@ -5,10 +5,30 @@
  *   1. Google Gemini (AI Studio) — gratis, 1M tokens de contexto
  *   2. OpenRouter — fallback gratuito
  *   3. Reglas locales — siempre disponible, JARVIS nunca se cae
+ *
+ * Conocimiento: inyecta la base FAQ de ESINSA (src/data/faqs-esinsa.md)
+ * en el system prompt para responder como la empresa, no como un bot genérico.
  */
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { WarehouseData } from '@/lib/server-data';
 
 const LOW_STOCK_THRESHOLD = Number(import.meta.env.JARVIS_LOW_STOCK_THRESHOLD) || 100;
+
+// ============================================================
+// Base de conocimiento FAQ (se carga una vez, en caliente no hace falta)
+// ============================================================
+let faqCache: string | null = null;
+function getFaqKnowledge(): string {
+  if (faqCache !== null) return faqCache;
+  try {
+    faqCache = readFileSync(join(process.cwd(), 'src/data/faqs-esinsa.md'), 'utf-8');
+  } catch {
+    console.warn('[jarvis] No se encontró src/data/faqs-esinsa.md');
+    faqCache = '';
+  }
+  return faqCache;
+}
 
 // ============================================================
 // Contexto compacto del almacén para el prompt del LLM
@@ -56,13 +76,17 @@ function buildSystemPrompt(data: WarehouseData, lang: string): string {
 Respondes SIEMPRE en ${langName}, de forma breve, precisa y profesional.
 Tienes acceso completo y en tiempo real a los datos del almacén (inventario NUTCODE, ubicaciones, pedidos y clientes).
 REGLAS:
-- Basa tus respuestas EXCLUSIVAMENTE en los datos proporcionados. No inventes productos ni cifras.
+- Basa tus respuestas EXCLUSIVAMENTE en los datos proporcionados y la base de conocimiento FAQ. No inventes productos, cifras ni PRECIOS.
 - Si te piden un producto, indica NUTCODE, stock y ubicación física.
 - Si el stock es inferior a ${LOW_STOCK_THRESHOLD}, adviértelo proactivamente.
 - Si detectas anomalías (stock crítico, pedidos acumulados), menciónalas al final.
-- Si la pregunta no tiene que ver con el almacén, redirige amablemente al tema.
-- Formato WhatsApp: texto plano con emojis moderados, sin tablas Markdown.
+- Para precios o presupuestos formales → deriva al equipo comercial (ver sección 4 de la FAQ).
+- Formato WhatsApp: texto plano con emojis moderados, sin tablas Markdown, respuestas cortas.
 
+== BASE DE CONOCIMIENTO DE LA EMPRESA (FAQ) ==
+${getFaqKnowledge()}
+
+== DATOS EN TIEMPO REAL DEL ALMACÉN ==
 ${buildContextSummary(data)}`;
 }
 

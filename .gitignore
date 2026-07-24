@@ -4,3 +4,5 @@ dist/
 .env
 .env.local
 data/
+bot_sessions/
+bot_db.json
