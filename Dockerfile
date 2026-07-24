@@ -27,6 +27,8 @@ RUN bun install --frozen-lockfile
 COPY . .
 RUN bun run build
 
+RUN mkdir -p /app/data
+
 EXPOSE 4000
 
 CMD ["node", "./dist/server/entry.mjs"]

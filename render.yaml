@@ -32,7 +32,7 @@ services:
     # Disco persistente para que la base de datos SQLite sobreviva reinicios
     disk:
       name: warehouse-db
-      mountPath: /app
+      mountPath: /app/data
       sizeGB: 5
     healthCheckPath: /api/health
     plan: free
