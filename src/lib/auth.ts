@@ -167,7 +167,7 @@ export function getCurrentSession(): AuthSession | null {
 export function requireAuth(): AuthSession | null {
   const session = getCurrentSession();
   if (!session) {
-    window.location.href = '/Login';
+    window.location.href = '/signin';
     return null;
   }
   return session;

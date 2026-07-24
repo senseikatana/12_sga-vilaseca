@@ -1,27 +1,54 @@
-import { useAuth0 } from '@auth0/auth0-react';
+import { useEffect, useState } from 'react';
+import { createClient } from '@insforge/sdk';
+
+const insforge = createClient({
+  baseUrl: import.meta.env.PUBLIC_INSFORGE_URL,
+  anonKey: import.meta.env.PUBLIC_INSFORGE_ANON_KEY,
+});
+
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  avatar_url?: string;
+}
 
 export default function UserMenu() {
-  const { user, logout, isAuthenticated } = useAuth0();
+  const [user, setUser] = useState<User | null>(null);
 
-  if (!isAuthenticated || !user) return null;
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await insforge.auth.getCurrentUser();
+        if (data?.user) setUser(data.user);
+      } catch {}
+    })();
+  }, []);
+
+  if (!user) return null;
+
+  const handleSignOut = async () => {
+    await insforge.auth.signOut();
+    window.location.href = '/signin';
+  };
 
   return (
     <div class="sticky inset-x-0 bottom-0 border-t border-gray-200 dark:border-gray-800">
       <div class="flex items-center gap-2 bg-white dark:bg-gray-900 p-4">
         <img
           alt={user.name || 'User'}
-          src={user.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'U')}&background=4f46e5&color=fff&size=128`}
+          src={user.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || user.email || 'U')}&background=4f46e5&color=fff&size=128`}
           class="size-10 rounded-full object-cover border border-gray-200 dark:border-gray-700"
         />
         <div class="flex-1 min-w-0">
           <p class="text-xs text-gray-900 dark:text-white">
-            <strong class="block font-medium truncate">{user.name}</strong>
+            <strong class="block font-medium truncate">{user.name || 'Operario'}</strong>
             <span class="text-gray-500 dark:text-gray-400 truncate block">{user.email}</span>
           </p>
         </div>
         <button
           title="Cerrar sesión"
-          onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+          onClick={handleSignOut}
           class="shrink-0 rounded-md p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
         >
           <svg class="size-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
