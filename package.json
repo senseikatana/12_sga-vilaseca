@@ -6,7 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "bot": "bun run src/bot/index.ts"
+    "bot": "npx tsx src/bot/index.ts"
   },
   "dependencies": {
     "@astrojs/node": "^11.0.2",

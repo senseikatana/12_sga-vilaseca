@@ -4,6 +4,8 @@ export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import content from '../data/esinsa-content.json';
 
+const appUrl = import.meta.env.PUBLIC_APP_URL || 'https://esinsa-sga-app.up.railway.app';
+
 const company = content.site.company;
 const empresa = content.pages.empresa;
 const home = content.pages.home;
@@ -23,8 +25,10 @@ const home = content.pages.home;
           <a href="#clientes" class="transition hover:text-white">Clientes</a>
         </nav>
         <a
-          href="/"
+          href={appUrl}
           class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Acceder al SGA
         </a>
@@ -40,7 +44,7 @@ const home = content.pages.home;
           {home.sections.quality_service.description}
         </p>
         <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <a href="/" class="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500">
+          <a href={appUrl} class="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/25 transition hover:bg-indigo-500" target="_blank" rel="noopener noreferrer">
             Acceder al Sistema SGA
           </a>
           <a href="#productos" class="rounded-lg border border-slate-700 px-6 py-3 text-sm font-semibold text-slate-300 transition hover:border-slate-500 hover:text-white">
