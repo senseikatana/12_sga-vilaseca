@@ -11,3 +11,6 @@ bot.qr.png
 bot_db_test.json
 test_auth2/
 creds.json
+
+# clerk configuration (can include secrets)
+/.clerk/
