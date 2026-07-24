@@ -119,18 +119,49 @@ const jarvisFlow = addKeyword<Provider, JsonFileDB>(EVENTS.WELCOME)
 // ------------------------------------------------------------
 const main = async () => {
   const adapterFlow = createFlow([jarvisFlow, menuFlow, humanFlow]);
-  const adapterProvider = createProvider(Provider);
+  // Fetch latest WhatsApp Web version to avoid 405 Connection Failure
+let waVersion: [number, number, number] = [2, 3000, 1035194821];
+try {
+  const { fetchLatestBaileysVersion } = await import('baileys');
+  const latest = await fetchLatestBaileysVersion();
+  waVersion = latest.version as [number, number, number];
+  console.log(`[bot] WhatsApp Web version: ${waVersion.join('.')}`);
+} catch (e) {
+  console.log(`[bot] Using default WhatsApp version: ${waVersion.join('.')}`);
+}
+
+const adapterProvider = createProvider(Provider, { version: waVersion });
   const adapterDB = new JsonFileDB({ filename: 'bot_db.json' });
 
-  const { httpServer } = await createBot({
+  const { httpServer, handleCtx } = await createBot({
     flow: adapterFlow,
     provider: adapterProvider,
     database: adapterDB,
+    log: { logs: { notices: true } },
   });
 
+  // Log de eventos del provider para depuración
+  const provider = adapterProvider.getInstance?.() ?? adapterProvider;
+  if (provider?.vendor?.ev) {
+    provider.vendor.ev.on('connection.update', (update: any) => {
+      const { connection, lastDisconnect, qr } = update;
+      if (qr) console.log('[bot] QR generado — escanéalo desde WhatsApp');
+      if (connection === 'open') console.log('[bot] ✅ Conectado a WhatsApp');
+      if (connection === 'close') {
+        const reason = lastDisconnect?.error?.output?.statusCode;
+        console.log(`[bot] Conexión cerrada. Razón: ${reason}`);
+        if (reason === 401) {
+          console.log('[bot] Sesión no válida — eliminando para regenerar QR...');
+          // El usuario deberá volver a escanear el QR
+        }
+      }
+    });
+  }
+
   httpServer(BOT_PORT);
-  console.log(`[bot] ESINSA WhatsApp Bot listo. Portal QR: http://localhost:${BOT_PORT}`);
+  console.log(`[bot] ESINSA WhatsApp Bot — Portal QR: http://localhost:${BOT_PORT}`);
   console.log(`[bot] Cerebro JARVIS en: ${JARVIS_URL}`);
+  console.log('[bot] Esperando escaneo del QR desde WhatsApp...');
 };
 
 main().catch((err) => {
