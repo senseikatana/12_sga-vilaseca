@@ -1,5 +1,4 @@
 import { useState, useMemo, type ReactNode } from 'react';
-import { useMutation } from '@tanstack/react-query';
 import { useInventoryStore, useOrdersStore, useCustomersStore } from '../lib/stores';
 import { useAIGenerateOrders, useAIGenerateCustomers, useAIGenerateInventory } from '../lib/hooks';
 import { InventoryItemFormSchema, OrderFormSchema, CustomerFormSchema } from '../lib/schemas';
@@ -88,7 +87,7 @@ function FormModal({
       setErrors(fe);
       return;
     }
-    onSubmit(form);
+    onSubmit(parsed.data as Record<string, string>);
     const init: Record<string, string> = {};
     for (const f of fields) init[f.name] = '';
     setForm(init);
@@ -301,7 +300,7 @@ function AutoCrudInner({ type, config: rawConfig }: { type: StoreType; config: C
         </div>
       )}
 
-      <FormModal open={modalOpen} onClose={() => { setModalOpen(false); setEditing(null); }}
+      <FormModal key={editing?.id ?? 'new'} open={modalOpen} onClose={() => { setModalOpen(false); setEditing(null); }}
         onSubmit={handleSubmit} fields={fields} schema={schema}
         initial={editing ? Object.fromEntries(fields.map((f: CrudField) => [f.name, String((editing as any)[f.name] ?? '')])) : undefined}
         title={editing ? `Editar ${title.slice(0, -1)}` : `Añadir ${title.slice(0, -1)}`} />

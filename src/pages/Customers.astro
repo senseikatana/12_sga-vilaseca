@@ -1,7 +1,6 @@
 ---
 import DashboardLayout from '../layouts/DashboardLayout.astro';
 import AutoCrud from '../components/AutoCrud';
-import { useCustomersStore } from '../lib/stores';
 ---
 
 <DashboardLayout title="Customers">
@@ -180,8 +179,8 @@ import { useCustomersStore } from '../lib/stores';
         datasets: [{
           label: 'New customers',
           data: [82, 95, 88, 110, 104, 128],
-          backgroundColor: '#4f46e5',
-          hoverBackgroundColor: '#4338ca',
+          backgroundColor: 'hsla(245, 76%, 58%, 1)',
+          hoverBackgroundColor: 'hsla(245, 64%, 53%, 1)',
           borderRadius: 4,
           maxBarThickness: 32,
         }],
@@ -191,8 +190,8 @@ import { useCustomersStore } from '../lib/stores';
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          x: { grid: { display: false }, ticks: { color: '#9ca3af' } },
-          y: { beginAtZero: true, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+          x: { grid: { display: false }, ticks: { color: 'hsla(220, 9%, 66%, 1)' } },
+          y: { beginAtZero: true, grid: { color: 'hsla(217, 33%, 26%, 1)' }, ticks: { color: 'hsla(220, 9%, 66%, 1)' } },
         },
       },
     })

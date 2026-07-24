@@ -7,9 +7,9 @@ export default {
     extend: {
       colors: {
         brand: {
-          DEFAULT: '#4f46e5', // indigo-600
-          dark: '#050811',
-          surface: '#0b0f19',
+          DEFAULT: 'hsla(215, 64%, 29%, 1)',
+          light: 'hsla(86, 41%, 46%, 1)',
+          surface: 'hsla(220, 20%, 95%, 1)',
         },
       },
       fontFamily: {

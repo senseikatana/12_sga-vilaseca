@@ -6,148 +6,68 @@ function delay(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// ============================================================
-// Query keys
-// ============================================================
 export const queryKeys = {
   inventory: ['esinsa', 'inventory'] as const,
   orders: ['esinsa', 'orders'] as const,
   customers: ['esinsa', 'customers'] as const,
 };
 
-// ============================================================
-// INVENTORY MUTATIONS
-// ============================================================
-export function useAddInventoryItem() {
+async function askAI(prompt: string): Promise<string> {
+  try {
+    const res = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: prompt, lang: 'es' }),
+    });
+    const data = await res.json();
+    return data?.reply ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function parseAIJson<T>(text: string): T[] | null {
+  try {
+    const match = text.match(/\[[\s\S]*\]/);
+    if (match) return JSON.parse(match[0]) as T[];
+  } catch { /* ignore */ }
+  return null;
+}
+
+export function useAIGenerateInventory() {
   const qc = useQueryClient();
   const addItem = useInventoryStore((s) => s.addItem);
   return useMutation({
-    mutationFn: async (data: InventoryItemForm) => {
-      await delay(200);
-      return addItem(data);
+    mutationFn: async (count: number = 3) => {
+      const prompt = `Genera ${count} productos de inventario realista para un almacén de juntas y selados industriales ESINSA en Tarragona. Devuelve SOLO un JSON array sin texto extra. Cada objeto debe tener: desc (string, descripción del producto), type (string, uno de: "Juntas", "Espárragos", "Tuercas", "Tornillos sin fin", "Cajas/Embalaje"), stock (number, entre 10 y 500), loc (string, formato "A-01" a "D-02"). Ejemplo: [{"desc":"Junta DN80 PN16","type":"Juntas","stock":120,"loc":"A-01"}]`;
+      const reply = await askAI(prompt);
+      const parsed = parseAIJson<{ desc: string; type: string; stock: number; loc: string }>(reply);
+      const created: InventoryItem[] = [];
+      if (parsed && parsed.length > 0) {
+        for (const item of parsed.slice(0, count)) {
+          created.push(addItem({
+            desc: item.desc || 'Producto sin nombre',
+            type: (['Juntas', 'Espárragos', 'Tuercas', 'Tornillos sin fin', 'Cajas/Embalaje'].includes(item.type) ? item.type : 'Juntas') as any,
+            stock: typeof item.stock === 'number' ? item.stock : 100,
+            loc: item.loc || 'A-01',
+          }));
+        }
+      } else {
+        const types = ['Juntas', 'Espárragos', 'Tuercas', 'Tornillos sin fin'] as const;
+        const locs = ['A-01', 'A-02', 'B-01', 'B-02', 'C-01', 'D-01'];
+        for (let i = 0; i < count; i++) {
+          created.push(addItem({
+            desc: `Producto generado ${Date.now()}-${i}`,
+            type: types[i % types.length],
+            stock: Math.floor(Math.random() * 400 + 20),
+            loc: locs[i % locs.length],
+          }));
+        }
+      }
+      return created;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.inventory }),
   });
-}
-
-export function useUpdateInventoryItem() {
-  const qc = useQueryClient();
-  const updateItem = useInventoryStore((s) => s.updateItem);
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<InventoryItem> }) => {
-      await delay(200);
-      updateItem(id, data);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.inventory }),
-  });
-}
-
-export function useDeleteInventoryItem() {
-  const qc = useQueryClient();
-  const deleteItem = useInventoryStore((s) => s.deleteItem);
-  return useMutation({
-    mutationFn: async (id: string) => {
-      await delay(100);
-      deleteItem(id);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.inventory }),
-  });
-}
-
-// ============================================================
-// ORDER MUTATIONS
-// ============================================================
-export function useAddOrder() {
-  const qc = useQueryClient();
-  const addItem = useOrdersStore((s) => s.addItem);
-  return useMutation({
-    mutationFn: async (data: OrderForm) => {
-      await delay(200);
-      return addItem(data);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.orders }),
-  });
-}
-
-export function useUpdateOrder() {
-  const qc = useQueryClient();
-  const updateItem = useOrdersStore((s) => s.updateItem);
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<Order> }) => {
-      await delay(200);
-      updateItem(id, data);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.orders }),
-  });
-}
-
-export function useDeleteOrder() {
-  const qc = useQueryClient();
-  const deleteItem = useOrdersStore((s) => s.deleteItem);
-  return useMutation({
-    mutationFn: async (id: string) => {
-      await delay(100);
-      deleteItem(id);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.orders }),
-  });
-}
-
-// ============================================================
-// CUSTOMER MUTATIONS
-// ============================================================
-export function useAddCustomer() {
-  const qc = useQueryClient();
-  const addItem = useCustomersStore((s) => s.addItem);
-  return useMutation({
-    mutationFn: async (data: CustomerForm) => {
-      await delay(200);
-      return addItem(data);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.customers }),
-  });
-}
-
-export function useUpdateCustomer() {
-  const qc = useQueryClient();
-  const updateItem = useCustomersStore((s) => s.updateItem);
-  return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: Partial<Customer> }) => {
-      await delay(200);
-      updateItem(id, data);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.customers }),
-  });
-}
-
-export function useDeleteCustomer() {
-  const qc = useQueryClient();
-  const deleteItem = useCustomersStore((s) => s.deleteItem);
-  return useMutation({
-    mutationFn: async (id: string) => {
-      await delay(100);
-      deleteItem(id);
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.customers }),
-  });
-}
-
-// ============================================================
-// AI GENERATION MUTATIONS
-// ============================================================
-const MOCK_COMPANIES = [
-  'Acme Corp', 'Globex Inc', 'Initech', 'Hooli', 'Stark Industries',
-  'Wayne Enterprises', 'Oscorp', 'Cyberdyne Systems', 'Umbrella Corp',
-  'Wonka Industries', 'Duff Beer', 'Sterling Cooper',
-];
-
-const MOCK_NAMES = [
-  'Juan Pérez', 'María García', 'Carlos López', 'Ana Martínez',
-  'Pedro Sánchez', 'Laura Rodríguez', 'Miguel Ángel', 'Sofía Ruiz',
-];
-
-function randomItem<T>(arr: T[]): T {
-  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 export function useAIGenerateOrders() {
@@ -155,15 +75,27 @@ export function useAIGenerateOrders() {
   const addItem = useOrdersStore((s) => s.addItem);
   return useMutation({
     mutationFn: async (count: number = 3) => {
-      await delay(1500);
+      const prompt = `Genera ${count} pedidos realistas para ESINSA Gasket, empresa de juntas industriales en Tarragona. Devuelve SOLO un JSON array sin texto extra. Cada objeto: customer (string, nombre de empresa industrial española), status (string, uno de: "paid", "pending", "refunded"), amount (number, entre 50 y 2000). Ejemplo: [{"customer":"Industrias Tarraco SL","status":"paid","amount":890}]`;
+      const reply = await askAI(prompt);
+      const parsed = parseAIJson<{ customer: string; status: string; amount: number }>(reply);
       const created: Order[] = [];
-      for (let i = 0; i < count; i++) {
-        const order = addItem({
-          customer: randomItem(MOCK_COMPANIES),
-          status: randomItem(['paid', 'pending', 'refunded'] as const),
-          amount: Math.round(Math.random() * 900 + 50),
-        });
-        created.push(order);
+      if (parsed && parsed.length > 0) {
+        for (const o of parsed.slice(0, count)) {
+          created.push(addItem({
+            customer: o.customer || 'Cliente',
+            status: (['paid', 'pending', 'refunded'].includes(o.status) ? o.status : 'pending') as any,
+            amount: typeof o.amount === 'number' ? o.amount : 100,
+          }));
+        }
+      } else {
+        const companies = ['Industrias Tarraco', 'Gaskets Ibérica', 'Sellados del Mediterráneo', 'TecnoJunta SL', 'Prefabricados Catalonia'];
+        for (let i = 0; i < count; i++) {
+          created.push(addItem({
+            customer: companies[i % companies.length],
+            status: 'pending' as const,
+            amount: Math.round(Math.random() * 1500 + 100),
+          }));
+        }
       }
       return created;
     },
@@ -176,18 +108,29 @@ export function useAIGenerateCustomers() {
   const addItem = useCustomersStore((s) => s.addItem);
   return useMutation({
     mutationFn: async (count: number = 3) => {
-      await delay(1500);
+      const prompt = `Genera ${count} clientes realistas para ESINSA Gasket, proveedor de juntas industriales en Tarragona. Devuelve SOLO un JSON array sin texto extra. Cada objeto: name (string, nombre del contacto), email (string, email corporativo), plan (string, uno de: "Starter", "Team", "Enterprise"), status (string, uno de: "active", "trial", "past-due"). Ejemplo: [{"name":"Ana García","email":"ana@tarracoind.com","plan":"Enterprise","status":"active"}]`;
+      const reply = await askAI(prompt);
+      const parsed = parseAIJson<{ name: string; email: string; plan: string; status: string }>(reply);
       const created: Customer[] = [];
-      for (let i = 0; i < count; i++) {
-        const name = randomItem(MOCK_NAMES);
-        const company = randomItem(MOCK_COMPANIES).toLowerCase().replace(/\s+/g, '');
-        const customer = addItem({
-          name,
-          email: `${name.toLowerCase().replace(/\s+/g, '.')}@${company}.com`,
-          plan: randomItem(['Team', 'Starter', 'Enterprise'] as const),
-          status: randomItem(['active', 'trial', 'past-due'] as const),
-        });
-        created.push(customer);
+      if (parsed && parsed.length > 0) {
+        for (const c of parsed.slice(0, count)) {
+          created.push(addItem({
+            name: c.name || 'Contacto',
+            email: c.email || 'email@empresa.com',
+            plan: (['Starter', 'Team', 'Enterprise'].includes(c.plan) ? c.plan : 'Team') as any,
+            status: (['active', 'trial', 'past-due'].includes(c.status) ? c.status : 'active') as any,
+          }));
+        }
+      } else {
+        const names = ['Juan Pérez', 'María García', 'Carlos López', 'Ana Martínez', 'Pedro Sánchez'];
+        for (let i = 0; i < count; i++) {
+          created.push(addItem({
+            name: names[i % names.length],
+            email: `contacto${i + 1}@empresa.com`,
+            plan: 'Team' as const,
+            status: 'active' as const,
+          }));
+        }
       }
       return created;
     },
@@ -195,38 +138,6 @@ export function useAIGenerateCustomers() {
   });
 }
 
-export function useAIGenerateInventory() {
-  const qc = useQueryClient();
-  const addItem = useInventoryStore((s) => s.addItem);
-  return useMutation({
-    mutationFn: async (count: number = 3) => {
-      await delay(1500);
-      const types = ['Espárragos', 'Tuercas', 'Tornillos sin fin', 'Juntas', 'Cajas/Embalaje'] as const;
-      const locs = ['A-01', 'A-02', 'B-01', 'B-02', 'C-01', 'D-01'];
-      const descs = [
-        'Tornillo M10x40', 'Tuerca M12', 'Junta DN80 PN16',
-        'Espárrago M16x100', 'Caja embalaje estándar', 'Junta espiral DN50',
-        'Tornillo allen M8', 'Tuerca autoblocante M10',
-      ];
-      const created: InventoryItem[] = [];
-      for (let i = 0; i < count; i++) {
-        const item = addItem({
-          desc: randomItem(descs),
-          type: randomItem(types),
-          stock: Math.floor(Math.random() * 500 + 10),
-          loc: randomItem(locs),
-        });
-        created.push(item);
-      }
-      return created;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.inventory }),
-  });
-}
-
-// ============================================================
-// Reset all data
-// ============================================================
 export function useResetAllData() {
   const qc = useQueryClient();
   return useMutation({

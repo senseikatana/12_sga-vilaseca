@@ -1,7 +1,6 @@
 ---
 import DashboardLayout from '../layouts/DashboardLayout.astro';
 import AutoCrud from '../components/AutoCrud';
-import { useOrdersStore } from '../lib/stores';
 ---
 
 <DashboardLayout title="Orders">
@@ -223,16 +222,16 @@ import { useOrdersStore } from '../lib/stores';
       data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
         datasets: [
-          { type: 'bar', label: 'Orders', data: [210, 245, 228, 268, 289, 312], backgroundColor: '#4f46e5', borderRadius: 4, maxBarThickness: 32, order: 2 },
-          { type: 'line', label: 'Target', data: [230, 230, 230, 260, 260, 260], borderColor: '#f59e0b', backgroundColor: '#f59e0b', borderWidth: 2, borderDash: [6, 4], pointRadius: 0, fill: false, order: 1 },
+          { type: 'bar', label: 'Orders', data: [210, 245, 228, 268, 289, 312], backgroundColor: 'hsla(245, 76%, 58%, 1)', borderRadius: 4, maxBarThickness: 32, order: 2 },
+          { type: 'line', label: 'Target', data: [230, 230, 230, 260, 260, 260], borderColor: 'hsla(36, 93%, 50%, 1)', backgroundColor: 'hsla(36, 93%, 50%, 1)', borderWidth: 2, borderDash: [6, 4], pointRadius: 0, fill: false, order: 1 },
         ],
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af' } } },
+        plugins: { legend: { position: 'bottom', labels: { color: 'hsla(220, 9%, 66%, 1)' } } },
         scales: {
-          x: { grid: { display: false }, ticks: { color: '#9ca3af' } },
-          y: { beginAtZero: true, grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+          x: { grid: { display: false }, ticks: { color: 'hsla(220, 9%, 66%, 1)' } },
+          y: { beginAtZero: true, grid: { color: 'hsla(217, 33%, 26%, 1)' }, ticks: { color: 'hsla(220, 9%, 66%, 1)' } },
         },
       },
     })

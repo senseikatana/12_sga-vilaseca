@@ -109,8 +109,8 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
   import { useOrdersStore } from '../lib/stores';
 
   const isDark = document.documentElement.classList.contains('dark') || localStorage.getItem('theme') === 'dark';
-  const textColor = isDark ? '#9ca3af' : '#4b5563';
-  const gridColor = isDark ? '#374151' : '#e5e7eb';
+  const textColor = isDark ? 'hsla(220, 9%, 66%, 1)' : 'hsla(220, 9%, 34%, 1)';
+  const gridColor = isDark ? 'hsla(217, 33%, 26%, 1)' : 'hsla(220, 13%, 91%, 1)';
 
   // Populate recent orders from store
   const tbody = document.getElementById('recent-orders-tbody');
@@ -145,8 +145,8 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 
   const revenueTrendChartContext = revenueTrendLineChartCanvas.getContext('2d')!;
   const revenueTrendFillGradient = revenueTrendChartContext.createLinearGradient(0, 0, 0, 256);
-  revenueTrendFillGradient.addColorStop(0, 'rgba(79, 70, 229, 0.25)');
-  revenueTrendFillGradient.addColorStop(1, 'rgba(79, 70, 229, 0)');
+  revenueTrendFillGradient.addColorStop(0, 'hsla(245, 76%, 58%, 0.25)');
+  revenueTrendFillGradient.addColorStop(1, 'hsla(245, 76%, 58%, 0)');
 
   const revenueTrendLineChart = new Chart(revenueTrendLineChartCanvas, {
     type: 'line',
@@ -154,9 +154,9 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
       labels: revenueRangesByPeriod['6m'].labels,
       datasets: [{
         label: 'Revenue', data: revenueRangesByPeriod['6m'].values,
-        borderColor: '#4f46e5', backgroundColor: revenueTrendFillGradient,
+        borderColor: 'hsla(245, 76%, 58%, 1)', backgroundColor: revenueTrendFillGradient,
         borderWidth: 2, pointRadius: 0, pointHoverRadius: 5,
-        pointHoverBackgroundColor: '#4f46e5', pointHoverBorderColor: '#ffffff',
+        pointHoverBackgroundColor: 'hsla(245, 76%, 58%, 1)', pointHoverBorderColor: 'hsla(0, 0%, 100%, 1)',
         pointHoverBorderWidth: 2, tension: 0.35, fill: true,
       }],
     },
@@ -202,9 +202,9 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
           const total = paid + pending + refunded || 1;
           return [Math.round(paid/total*100), Math.round(pending/total*100), Math.round(refunded/total*100)];
         })(),
-        backgroundColor: ['#10b981', '#f59e0b', '#f43f5e'],
-        hoverBackgroundColor: ['#059669', '#d97706', '#e11d48'],
-        borderColor: isDark ? '#1f2937' : '#ffffff', borderWidth: 2,
+        backgroundColor: ['hsla(160, 84%, 39%, 1)', 'hsla(36, 93%, 50%, 1)', 'hsla(348, 83%, 55%, 1)'],
+        hoverBackgroundColor: ['hsla(160, 92%, 31%, 1)', 'hsla(36, 93%, 44%, 1)', 'hsla(348, 83%, 47%, 1)'],
+        borderColor: isDark ? 'hsla(217, 33%, 17%, 1)' : 'hsla(0, 0%, 100%, 1)', borderWidth: 2,
       }],
     },
     options: {
