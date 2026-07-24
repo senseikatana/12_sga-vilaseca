@@ -27,6 +27,7 @@ export interface AuthSession {
 
 const USERS_KEY = 'esinsa_wms_users';
 const SESSION_KEY = 'esinsa_wms_session';
+const RESET_TOKENS_KEY = 'esinsa_wms_reset_tokens';
 
 // ============================================================
 // Initialize default admin user if none exist
@@ -206,6 +207,75 @@ export function updatePassword(userId: string, newPassword: string): boolean {
   users[idx].password = newPassword;
   saveUsers(users);
   return true;
+}
+
+export function requestPasswordReset(email: string): { success: boolean; token?: string; error?: string } {
+  ensureDefaultAdmin();
+
+  if (!email) {
+    return { success: false, error: 'El email es obligatorio' };
+  }
+
+  const users = getUsers();
+  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (!user) {
+    return { success: false, error: 'No se encontró una cuenta con ese email' };
+  }
+
+  const token = crypto.randomUUID?.() || Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const expires = Date.now() + 15 * 60 * 1000;
+
+  let tokens: Record<string, { email: string; expires: number }> = {};
+  try {
+    const raw = localStorage.getItem(RESET_TOKENS_KEY);
+    if (raw) tokens = JSON.parse(raw);
+  } catch {}
+
+  tokens[token] = { email: user.email.toLowerCase(), expires };
+  localStorage.setItem(RESET_TOKENS_KEY, JSON.stringify(tokens));
+
+  return { success: true, token };
+}
+
+export function resetPassword(token: string, newPassword: string): { success: boolean; error?: string } {
+  if (!token || !newPassword) {
+    return { success: false, error: 'Token y contraseña son obligatorios' };
+  }
+
+  if (newPassword.length < 6) {
+    return { success: false, error: 'La contraseña debe tener al menos 6 caracteres' };
+  }
+
+  let tokens: Record<string, { email: string; expires: number }> = {};
+  try {
+    const raw = localStorage.getItem(RESET_TOKENS_KEY);
+    if (raw) tokens = JSON.parse(raw);
+  } catch {}
+
+  const entry = tokens[token];
+  if (!entry) {
+    return { success: false, error: 'Token inválido o ya utilizado' };
+  }
+
+  if (Date.now() > entry.expires) {
+    delete tokens[token];
+    localStorage.setItem(RESET_TOKENS_KEY, JSON.stringify(tokens));
+    return { success: false, error: 'El token ha expirado. Solicita uno nuevo.' };
+  }
+
+  const users = getUsers();
+  const idx = users.findIndex(u => u.email === entry.email);
+  if (idx === -1) {
+    return { success: false, error: 'Usuario no encontrado' };
+  }
+
+  users[idx].password = newPassword;
+  saveUsers(users);
+
+  delete tokens[token];
+  localStorage.setItem(RESET_TOKENS_KEY, JSON.stringify(tokens));
+
+  return { success: true };
 }
 
 // Initialize default admin on module load (runs when this file is imported in a browser context)
