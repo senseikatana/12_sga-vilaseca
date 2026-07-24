@@ -15,6 +15,20 @@ services:
         sync: false
       - key: OPENROUTER_MODEL
         fromEnv: OPENROUTER_MODEL
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        fromEnv: GEMINI_MODEL
+      - key: GEMINI_MODEL_FALLBACK
+        fromEnv: GEMINI_MODEL_FALLBACK
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_VERIFY_TOKEN
+        sync: false
+      - key: JARVIS_LOW_STOCK_THRESHOLD
+        fromEnv: JARVIS_LOW_STOCK_THRESHOLD
     # Disco persistente para que la base de datos SQLite sobreviva reinicios
     disk:
       name: warehouse-db

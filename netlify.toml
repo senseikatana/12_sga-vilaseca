@@ -1,0 +1,11 @@
+[build]
+  command = "npm install -g bun@latest && DEPLOY_TARGET=netlify bun install --frozen-lockfile && DEPLOY_TARGET=netlify bun run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/"
+  to = "/landing/"
+  status = 302
